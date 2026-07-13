@@ -1,0 +1,1794 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Biometric.Vision — конкурентный ландшафт · 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bv-yellow: #FFDC00;
+      --bv-yellow-600: #F5D300;
+      --bv-grad-yellow: linear-gradient(180.976deg, #FFDC00 3.18%, #FFE438 46.25%, #EFD858 94.01%);
+      --bv-black: #000000;
+      --bv-ink-950: #0D0D0D;
+      --bv-ink-900: #1A1A1A;
+      --bv-white: #FFFFFF;
+      --bv-gray-50: #F8F8F8;
+      --bv-gray-100: #F2F2F2;
+      --bv-gray-300: #BEBDB8;
+      --bv-green: #4F7A5A;
+      --bv-ink-a70: rgba(0,0,0,0.7);
+      --bv-ink-a60: rgba(0,0,0,0.6);
+      --bv-ink-a30: rgba(0,0,0,0.3);
+      --bv-ink-a10: rgba(0,0,0,0.1);
+      --bv-ink-a05: rgba(0,0,0,0.05);
+      --bv-on-dark-70: rgba(255,255,255,0.7);
+      --bv-on-dark-50: rgba(255,255,255,0.5);
+      --bv-on-dark-10: rgba(255,255,255,0.1);
+      --bv-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --bv-font-display: 'Montserrat', var(--bv-font-sans);
+      --bv-radius-md: 12px;
+      --bv-radius-lg: 20px;
+      --bv-radius-card: 28px;
+      --bv-radius-pill: 100px;
+      --bv-shadow-sm: 0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+      --slide-max: 1120px;
+      --sidebar-w: 240px;
+      --ch-direct: #FFDC00;
+      --ch-ref: #4F7A5A;
+      --ch-org: #6B8F71;
+      --ch-paid: #BEBDB8;
+      --ch-social: #1A1A1A;
+      --ch-email: #888888;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body { font-family: var(--bv-font-sans); color: var(--bv-black); background: var(--bv-white); overflow: hidden; }
+
+    .layout { display: flex; height: 100vh; }
+    .sidebar {
+      width: var(--sidebar-w); flex-shrink: 0; background: var(--bv-ink-950); color: var(--bv-white);
+      display: flex; flex-direction: column; padding: 24px 0; z-index: 200; overflow-y: auto;
+    }
+    .sidebar__logo { font-weight: 700; font-size: 11px; letter-spacing: 0.22em; padding: 0 20px 24px; border-bottom: 1px solid var(--bv-on-dark-10); margin-bottom: 16px; }
+    .sidebar__nav { list-style: none; margin: 0; padding: 0 12px; flex: 1; }
+    .sidebar__nav a {
+      display: block; padding: 8px 12px; font-size: 12px; color: var(--bv-on-dark-50); text-decoration: none;
+      border-radius: 8px; line-height: 1.35; transition: background 0.15s, color 0.15s;
+    }
+    .sidebar__nav a:hover { background: var(--bv-on-dark-10); color: var(--bv-white); }
+    .sidebar__nav a.active { background: var(--bv-yellow); color: var(--bv-black); font-weight: 600; }
+    .sidebar__hint { font-size: 11px; color: var(--bv-on-dark-50); padding: 16px 20px 0; border-top: 1px solid var(--bv-on-dark-10); margin-top: 8px; }
+
+    .deck { flex: 1; height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+    .slide {
+      height: 100vh; min-height: 100vh; max-height: 100vh; scroll-snap-align: start;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 36px 40px 72px; position: relative; overflow: hidden; box-sizing: border-box;
+    }
+    .slide__inner { max-width: var(--slide-max); margin: 0 auto; width: 100%; max-height: calc(100vh - 100px); overflow: hidden; }
+    .slide__inner--scroll { max-height: calc(100vh - 84px); overflow-y: auto; overflow-x: hidden; padding-right: 6px; }
+    .slide__inner--scroll::-webkit-scrollbar { width: 8px; }
+    .slide__inner--scroll::-webkit-scrollbar-thumb { background: var(--bv-ink-a30); border-radius: 8px; }
+    .slide--compact { padding: 28px 32px 64px; }
+    .slide--compact h2 { font-size: clamp(20px, 2.5vw, 28px); margin-bottom: 10px; }
+    .slide--compact .eyebrow { margin-bottom: 8px; }
+    .slide--compact .lead { font-size: 13px; line-height: 1.4; }
+    .slide--compact .card { padding: 12px 14px; }
+    .slide--compact .card p, .slide--compact table { font-size: 11px; }
+    .slide--compact th, .slide--compact td { padding: 5px 8px; line-height: 1.3; }
+    .slide--compact h3 { font-size: 14px; margin-bottom: 4px; }
+    .slide--compact .table-wrap { margin-top: 8px; }
+    .slide--compact .note { margin-top: 6px; font-size: 10px; }
+    .slide--dense th, .slide--dense td { padding: 3px 6px; font-size: 10px; }
+    .slide--dense h2 { font-size: 22px; margin-bottom: 8px; }
+    .slide--dossier .sw-chart { max-width: 420px; margin: 8px 0; border: 1px solid var(--bv-ink-a10); border-radius: 8px; }
+    .slide--dossier .sw-chart img { width: 100%; height: auto; display: block; }
+    .slide--dossier .dossier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+    .slide--dossier h3 { font-size: 12px; margin: 0 0 4px; }
+    @media (max-width: 900px) { .slide--dossier .dossier-grid { grid-template-columns: 1fr; } }
+    .slide--dossier .slide__inner--scroll { max-height: calc(100vh - 88px); overflow-y: auto; overflow-x: hidden; padding-right: 4px; }
+    .slide--dossier .dossier-kpi { font-size: 11px; line-height: 1.5; margin: 0 0 8px; color: var(--bv-ink-a70); }
+    .slide--dossier .dossier-grid p { font-size: 10px; margin: 0; line-height: 1.4; }
+    .slide--dossier .dossier-hint { font-size: 9px; color: var(--bv-ink-a70); margin: 0 0 4px; font-style: italic; line-height: 1.35; }
+    .slide--dossier .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+    .slide--dossier .chip { display: inline-block; background: var(--bv-gray-50); border: 1px solid var(--bv-ink-a10); border-radius: 999px; padding: 2px 8px; font-size: 10px; line-height: 1.3; color: var(--bv-ink); }
+    .slide--dossier .dossier-cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start; }
+    @media (max-width: 900px) { .slide--dossier .dossier-cols2 { grid-template-columns: 1fr; } }
+    .comp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+    .comp-grid .comp-card h3 { font-size: 13px; margin: 0; }
+    .comp-grid .comp-card p { font-size: 11px; margin: 4px 0 0; line-height: 1.4; }
+    #s-competitors .slide__inner--scroll, #s-acquisition .slide__inner--scroll { max-height: calc(100vh - 88px); overflow-y: auto; overflow-x: hidden; padding-right: 4px; }
+    .comp-grid .comp-card--us, .card--us { border-color: var(--bv-accent, #2f6df6); background: var(--bv-accent-a08, rgba(47,109,246,.06)); }
+    @media (max-width: 900px) { .comp-grid { grid-template-columns: 1fr 1fr; } }
+    #s-keywords-p1 table td:first-child, #s-keywords-p2 table td:first-child { width: 100%; }
+    #s-keywords-p1 table td:last-child, #s-keywords-p1 table th:last-child,
+    #s-keywords-p2 table td:last-child, #s-keywords-p2 table th:last-child { white-space: nowrap; text-align: right; padding-left: 18px; }
+    .slide--dossier .dossier-cols2 table td:last-child, .slide--dossier .dossier-cols2 table th:last-child { white-space: nowrap; text-align: right; }
+    .slide--dossier-evidence .sw-shots-stack { display: flex; flex-direction: column; gap: 18px; margin-top: 14px; }
+    .slide--dossier .sw-shot { margin: 0; border: 1px solid var(--bv-ink-a10); border-radius: 10px; overflow: hidden; background: var(--bv-white); box-shadow: 0 2px 10px rgba(16,24,40,.06); }
+    .slide--dossier .sw-shot figcaption { font-size: 13px; font-weight: 600; margin: 0; padding: 10px 14px; background: var(--bv-gray-50); border-bottom: 1px solid var(--bv-ink-a10); color: var(--bv-ink); }
+    .slide--dossier .sw-shot img { width: 100%; height: auto; display: block; }
+    .cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+    @media (max-width: 900px) { .cols-2 { grid-template-columns: 1fr; } }
+    .slide--compact .grid-3 { gap: 12px; }
+    .slide--compact .flow-diagram { gap: 8px; margin: 12px 0; }
+    .slide--compact .flow-step { padding: 12px 14px; }
+    .slide--compact .flow-step h4 { font-size: 13px; }
+    .slide--compact .flow-step p { font-size: 11px; }
+    .slide--dark { background: var(--bv-ink-950); color: var(--bv-white); }
+    .slide--muted { background: var(--bv-gray-50); }
+
+    .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--bv-ink-a60); margin: 0 0 16px; }
+    .slide--dark .eyebrow { color: var(--bv-on-dark-50); }
+    h1 { font-weight: 600; font-size: clamp(32px, 4.5vw, 48px); line-height: 1.08; letter-spacing: -0.02em; margin: 0 0 20px; }
+    h2 { font-weight: 600; font-size: clamp(26px, 3.2vw, 36px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 24px; }
+    h3 { font-size: 18px; font-weight: 600; margin: 0 0 10px; }
+    .lead { font-size: 17px; line-height: 1.55; color: var(--bv-ink-a70); margin: 0; max-width: 760px; }
+    .slide--dark .lead { color: var(--bv-on-dark-70); }
+    .highlight { background: var(--bv-grad-yellow); padding: 0 8px; border-radius: 8px; color: var(--bv-black); }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+    @media (max-width: 1100px) {
+      .sidebar { display: none; }
+      .grid-2, .grid-3, .two-col { grid-template-columns: 1fr; }
+      .slide { padding: 32px 20px 80px; }
+    }
+
+    .card {
+      background: var(--bv-white); border-radius: var(--bv-radius-card); border: 1px solid var(--bv-ink-a05);
+      box-shadow: var(--bv-shadow-sm); padding: 24px 28px;
+    }
+    .slide--dark .card { background: var(--bv-ink-900); border-color: var(--bv-on-dark-10); }
+    .card p, .card li { font-size: 14px; line-height: 1.5; color: var(--bv-ink-a70); margin: 0; }
+    .slide--dark .card p, .slide--dark .card li { color: var(--bv-on-dark-70); }
+    .card ul, .card ol { margin: 8px 0 0; padding-left: 18px; }
+
+    .stat-row { display: flex; flex-wrap: wrap; gap: 32px; margin-top: 32px; }
+    .stat__value { font-family: var(--bv-font-display); font-size: 42px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+    .stat__label { font-size: 13px; color: var(--bv-ink-a60); margin-top: 8px; max-width: 160px; }
+    .slide--dark .stat__label { color: var(--bv-on-dark-50); }
+
+    .table-wrap { overflow-x: auto; margin-top: 20px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--bv-ink-a05); vertical-align: top; }
+    th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--bv-ink-a60); font-weight: 600; }
+    .slide--dark th { color: var(--bv-on-dark-50); }
+    .slide--dark td { border-color: var(--bv-on-dark-10); }
+    tr:last-child td { border-bottom: none; }
+    tr.row-us td { background: rgba(79,122,90,0.08); font-weight: 600; }
+    .slide--dark tr.row-us td { background: rgba(255,220,0,0.08); }
+
+    .callout {
+      margin-top: 24px; padding: 18px 22px; border-radius: var(--bv-radius-lg);
+      background: var(--bv-gray-100); border-left: 4px solid var(--bv-yellow); font-size: 14px; line-height: 1.5;
+    }
+    .slide--dark .callout { background: var(--bv-ink-900); border-left-color: var(--bv-yellow); }
+
+    .timeline { margin-top: 24px; display: flex; flex-direction: column; gap: 14px; }
+    .timeline__item { display: grid; grid-template-columns: 90px 1fr; gap: 16px; align-items: start; }
+    .timeline__week { font-size: 12px; font-weight: 600; color: var(--bv-ink-a60); padding-top: 4px; }
+    .slide--dark .timeline__week { color: var(--bv-on-dark-50); }
+
+    .chart-box {
+      margin-top: 20px; background: var(--bv-white); border-radius: var(--bv-radius-card);
+      padding: 24px 28px; border: 1px solid var(--bv-ink-a05); box-shadow: var(--bv-shadow-sm);
+    }
+    .slide--dark .chart-box { background: var(--bv-ink-900); border-color: var(--bv-on-dark-10); }
+
+    .chart-panel {
+      background: var(--bv-white); color: var(--bv-black); border-radius: var(--bv-radius-card);
+      border: 1px solid var(--bv-ink-a10); padding: 20px 22px; display: flex; flex-direction: column; gap: 16px;
+    }
+    .chart-panel h3 { font-size: 17px; margin: 0; color: var(--bv-black); font-weight: 600; }
+    .chart-panel__sub { font-size: 12px; color: var(--bv-ink-a60); margin: 0; line-height: 1.45; }
+
+    .quadrant-grid {
+      display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+      gap: 10px; min-height: 320px;
+    }
+    .quadrant {
+      border-radius: var(--bv-radius-lg); padding: 14px 16px; border: 1px solid var(--bv-ink-a10);
+      background: var(--bv-gray-50); display: flex; flex-direction: column; gap: 10px;
+    }
+    .quadrant--accent { background: rgba(255,220,0,0.12); border-color: rgba(255,220,0,0.45); }
+    .quadrant__label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--bv-ink-a60); line-height: 1.35;
+    }
+    .quadrant__item {
+      font-size: 13px; line-height: 1.35; padding: 8px 10px; background: var(--bv-white);
+      border-radius: 10px; border: 1px solid var(--bv-ink-a05);
+    }
+    .quadrant__item strong { display: block; font-size: 14px; margin-bottom: 2px; }
+    .quadrant__item span { color: var(--bv-ink-a60); font-size: 12px; }
+    .quadrant__item--us { background: var(--bv-yellow); border-color: var(--bv-yellow-600); }
+    .quadrant__item--us span { color: rgba(0,0,0,0.65); }
+    .quadrant-axis {
+      display: flex; justify-content: space-between; font-size: 11px; color: var(--bv-ink-a60);
+      padding: 0 2px; margin-top: 4px;
+    }
+    .quadrant-axis--y {
+      writing-mode: vertical-rl; transform: rotate(180deg); text-align: center;
+      font-size: 10px; color: var(--bv-ink-a60); align-self: stretch; padding-right: 6px;
+    }
+
+    .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+    .bar-row {
+      display: grid; grid-template-columns: 130px 1fr 92px; gap: 14px; align-items: center; font-size: 14px;
+    }
+    .bar-row__name { font-weight: 500; color: var(--bv-black); }
+    .bar-row--us .bar-row__name { font-weight: 700; color: var(--bv-green); }
+    .bar-row--persona .bar-row__name { color: var(--bv-ink-a60); font-style: italic; }
+    .bar-row__track {
+      height: 32px; background: var(--bv-gray-100); border-radius: 16px; overflow: hidden; position: relative;
+    }
+    .bar-row__fill {
+      height: 100%; border-radius: 16px; min-width: 8px;
+      background: linear-gradient(90deg, #FFDC00 0%, #EFD858 100%);
+    }
+    .bar-row--us .bar-row__fill { background: linear-gradient(90deg, #4F7A5A 0%, #6B8F71 100%); }
+    .bar-row--persona .bar-row__fill {
+      background: transparent; border: 2px dashed var(--bv-gray-300); box-sizing: border-box; height: calc(100% - 4px); margin: 2px;
+    }
+    .bar-row__val { font-size: 13px; font-weight: 700; text-align: right; color: var(--bv-ink-a70); white-space: nowrap; }
+
+    .stack-chart { display: flex; flex-direction: column; gap: 14px; }
+    .stack-row { display: grid; grid-template-columns: 96px 1fr; gap: 10px; align-items: center; }
+    .stack-row__name { font-size: 12px; font-weight: 600; }
+    .stack-row--us .stack-row__name { color: var(--bv-green); }
+    .stack-row__body { display: flex; flex-direction: column; gap: 5px; }
+    .stack-bar { display: flex; height: 22px; border-radius: 11px; overflow: hidden; background: var(--bv-gray-100); }
+    .stack-seg { height: 100%; min-width: 3px; transition: opacity 0.15s; }
+    .stack-seg--direct { background: var(--ch-direct); }
+    .stack-seg--ref { background: var(--ch-ref); }
+    .stack-seg--org { background: var(--ch-org); }
+    .stack-seg--paid { background: var(--ch-paid); }
+    .stack-seg--social { background: var(--ch-social); opacity: 0.35; }
+    .stack-seg--email { background: var(--ch-email); }
+    .stack-row__hint { font-size: 10px; color: var(--bv-ink-a60); line-height: 1.25; }
+    .chart-legend {
+      display: flex; flex-wrap: wrap; gap: 12px 20px; margin-top: 16px; padding-top: 16px;
+      border-top: 1px solid var(--bv-ink-a05); font-size: 12px; color: var(--bv-ink-a70);
+    }
+    .chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
+    .chart-legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; flex-shrink: 0; }
+
+    .flow-diagram {
+      display: grid; grid-template-columns: 1fr 48px 1fr 48px 1fr; gap: 0; align-items: stretch;
+      margin: 24px 0 12px;
+    }
+    .flow-step {
+      background: var(--bv-white); border: 1px solid var(--bv-ink-a10); border-radius: var(--bv-radius-card);
+      padding: 22px 20px; box-shadow: var(--bv-shadow-sm);
+    }
+    .flow-step--accent { background: var(--bv-yellow); border-color: var(--bv-yellow-600); }
+    .flow-step__num {
+      display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      color: var(--bv-ink-a60); margin-bottom: 10px; padding: 3px 8px; background: var(--bv-gray-100); border-radius: 6px;
+    }
+    .flow-step--accent .flow-step__num { background: rgba(0,0,0,0.08); color: var(--bv-black); }
+    .flow-step h4 { margin: 0 0 10px; font-size: 16px; font-weight: 600; line-height: 1.25; }
+    .flow-step p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--bv-ink-a70); }
+    .flow-step__examples { margin-top: 12px; font-size: 12px; color: var(--bv-ink-a60); line-height: 1.4; }
+    .flow-connector { display: flex; align-items: center; justify-content: center; color: var(--bv-ink-a30); }
+    .flow-connector svg { width: 32px; height: 32px; }
+    @media (max-width: 900px) {
+      .flow-diagram { grid-template-columns: 1fr; gap: 12px; }
+      .flow-connector { display: none; }
+      .quadrant-grid { min-height: auto; }
+    }
+
+    .price-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 20px; }
+    @media (min-width: 900px) { .price-cards { grid-template-columns: repeat(6, 1fr); } }
+    .price-card {
+      background: var(--bv-white); border: 1px solid var(--bv-ink-a10); border-radius: var(--bv-radius-card);
+      padding: 20px 14px; text-align: center; box-shadow: var(--bv-shadow-sm);
+    }
+    .price-card--us { background: var(--bv-yellow); border-color: var(--bv-yellow-600); box-shadow: none; }
+    .price-card__name { font-size: 13px; font-weight: 600; margin-bottom: 10px; min-height: 2.6em; display: flex; align-items: center; justify-content: center; }
+    .price-card__price { font-family: var(--bv-font-display); font-size: 26px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+    .price-card__meta { font-size: 12px; color: var(--bv-ink-a60); margin-top: 10px; line-height: 1.45; }
+
+    .note { font-size: 12px; color: var(--bv-ink-a60); margin-top: 12px; line-height: 1.45; }
+    .slide--dark .note { color: var(--bv-on-dark-50); }
+
+    .comp-card { border-top: 3px solid var(--bv-yellow); }
+    .comp-card--p2 { border-top-color: var(--bv-gray-300); }
+
+    .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: var(--bv-radius-pill); background: var(--bv-gray-100); }
+    .tag--accent { background: var(--bv-yellow); }
+
+    .summary-list { padding-left: 20px; font-size: 15px; line-height: 1.65; color: var(--bv-on-dark-70); margin: 0; }
+    .summary-list li { margin-bottom: 16px; padding-left: 4px; }
+    .summary-list li:last-child { margin-bottom: 0; }
+
+    .progress { position: fixed; bottom: 0; left: var(--sidebar-w); right: 0; height: 4px; background: var(--bv-ink-a05); z-index: 300; }
+    @media (max-width: 1100px) { .progress { left: 0; } }
+    .progress__bar { height: 100%; background: var(--bv-yellow); width: 0%; transition: width 0.2s ease; }
+    .nav-hint {
+      position: fixed; bottom: 16px; right: 24px; font-size: 12px; color: var(--bv-ink-a30);
+      z-index: 300; pointer-events: none; background: rgba(255,255,255,0.9); padding: 6px 12px; border-radius: 8px;
+    }
+
+    @media print {
+      body { overflow: visible; }
+      .sidebar, .nav-hint, .progress { display: none; }
+      .layout { display: block; }
+      .deck { overflow: visible; scroll-snap-type: none; height: auto; }
+      .slide { min-height: auto; page-break-after: always; padding: 40px; }
+    }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" aria-label="Навигация">
+    <div class="sidebar__logo">BIOMETRIC</div>
+    <ul class="sidebar__nav" id="sidebarNav"></ul>
+    <div class="sidebar__hint">← → клавиши<br><span id="slideCounter">1 / 13</span></div>
+  </aside>
+
+  <div class="deck" id="deck">
+
+    <!-- 1 Title -->
+    <section class="slide slide--dark" id="s-title" data-title="Титул">
+      <div class="slide__inner">
+        <p class="eyebrow">Внутренняя презентация · июль 2026</p>
+        <h1>Конкурентный ландшафт<br>онлайн-проверки личности</h1>
+        <p class="lead">Обзор для всей компании — простым языком. Данные Similarweb (апр–июнь 2026), сайты конкурентов, цены и каналы привлечения. Baseline: test2.biometric.vision</p>
+        <div class="stat-row">
+          <div><div class="stat__value">11</div><div class="stat__label">конкурентов в обзоре</div></div>
+          <div><div class="stat__value">×300</div><div class="stat__label">разрыв трафика vs Sumsub</div></div>
+          <div><div class="stat__value">$0.33</div><div class="stat__label">цена test2 · уровень Didit</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 About Us -->
+    <section class="slide" id="s-about" data-title="О нас">
+      <div class="slide__inner">
+        <p class="eyebrow">Biometric.Vision · test2</p>
+        <h2>Экосистема KYC для любой отрасли</h2>
+        <p class="lead">Канон — <strong>test2.biometric.vision/ru</strong>. Старый global biometric.vision — только для цифры трафика Similarweb (19 тыс.), не для текстов на сайте.</p>
+        <div class="grid-2" style="margin-top:28px;">
+          <div class="card">
+            <h3>Что говорим на сайте</h3>
+            <ul>
+              <li>Один API: Liveness + OCR + Face Match + AML</li>
+              <li>Интеграция через AI-агента (MCP) + API, SDK, Hosted UI</li>
+              <li>11 отраслей: банки, МФО, финтех, crypto, iGaming, такси, logistics…</li>
+              <li>433 типа документов · 220+ стран · ISO 27001 · ISO 30107-3</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Цены (публично на test2)</h3>
+            <table>
+              <tr><td><strong>Старт</strong></td><td>500 полных KYC/мес бесплатно — <strong>1 год</strong></td></tr>
+              <tr><td><strong>Рост</strong></td><td><strong>$0.33</strong> за проверку · без минимума</td></tr>
+              <tr><td><strong>Enterprise</strong></td><td>Установка на сервере клиента · SLA · white-label</td></tr>
+            </table>
+            <p style="margin-top:12px;">$0.33 = уровень Didit. В переговорах — качество, поддержка, кейсы в СНГ, а не только цена.</p>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top:20px;">
+          <div class="card">
+            <h3>Кейсы и дифференциаторы</h3>
+            <ul>
+              <li>Liveness Fast / CORE / PRO — три уровня под разные отрасли</li>
+              <li>Кейсы: Ubet, Vivus, Arnur Credit, RBK, Binance KZ</li>
+              <li>Установка на сервере банка (on-prem)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Правило Ланы: banking ≠ taxi</h3>
+            <table>
+              <tr><th>Отрасль</th><th>Обязательно</th><th>Не писать</th></tr>
+              <tr><td><strong>Banking</strong></td><td>AML + CORE/PRO liveness</td><td>тексты про такси</td></tr>
+              <tr><td><strong>Taxi</strong></td><td>проверка перед сменой · права водителя</td><td>AML в заголовке</td></tr>
+              <tr><td><strong>iGaming</strong></td><td>passive liveness · anti multi-account</td><td>banking AML dashboard</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="callout"><strong>Similarweb (global домен):</strong> biometric.vision — <strong>19 270</strong> визитов за 3 мес · vs Sumsub <strong>×300</strong>. test2 на subdomain в Similarweb отдельно не виден.</div>
+      </div>
+    </section>
+
+    <!-- 3 Executive summary -->
+    <section class="slide slide--dark" id="s-conclusion" data-title="Главные выводы">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Главные выводы</p>
+        <h2>Не проигрываем технологией — проигрываем <span class="highlight">узнаваемостью</span></h2>
+        <div class="two-col" style="margin-top:24px;">
+          <div class="card">
+            <ol class="summary-list">
+              <li><strong>Узнаваемость.</strong> У Sumsub 5,9 млн посещений сайта за 3 месяца, у нас — 19 тыс. Люди чаще слышат о Sumsub и Veriff. Это не значит, что продукт хуже.</li>
+              <li><strong>Два способа расти.</strong> Sumsub и iDenfy: 71–72% людей заходят напрямую (сильный бренд). Veriff и Didit: до трети трафика — переходы с сайтов их клиентов, где встроена проверка личности. Нам нужны оба направления.</li>
+              <li><strong>Цены конкурентны.</strong> test2: 500 проверок бесплатно/мес (1 год), далее $0.33 — уровень Didit. Sumsub и iDenfy — от $1.35.</li>
+              <li><strong>Сильные стороны.</strong> Liveness Fast/CORE/PRO · MCP · 11 отраслей на test2 · кейсы в СНГ · ISO 30107-3 · установка на сервере банка.</li>
+              <li><strong>Как отвоёвывать узнаваемость (доказано конкурентами).</strong> Страницы «vs Sumsub/Veriff» и «X-alternative» (Veriff тратит на них $32K, Didit/Sumsub тоже) · перехват брендов в рекламе · программа отзывов G2 (у лидеров 40–208, у нас 0 — это «ров») · уникальный угол on-prem + MCP без конкуренции. Подробнее — слайды «Пересечения», «Keyword-gap», «Топ-страницы», «Что говорят клиенты».</li>
+            </ol>
+          </div>
+          <div class="chart-panel">
+            <div>
+              <h3>Сильный бренд vs через клиентов</h3>
+              <p class="chart-panel__sub">Similarweb · апр–июнь 2026 · Worldwide</p>
+            </div>
+            <div class="quadrant-grid">
+              <div class="quadrant">
+                <div class="quadrant__label">↑ много визитов · ← сильный бренд</div>
+                <div class="quadrant__item"><strong>Sumsub</strong><span>5,9 млн · 10% с сайтов клиентов</span></div>
+                <div class="quadrant__item"><strong>Ondato</strong><span>4,0 млн · 12%</span></div>
+                <div class="quadrant__item"><strong>Incode</strong><span>2,4 млн · 9%</span></div>
+                <div class="quadrant__item"><strong>iDenfy</strong><span>1,4 млн · 18%</span></div>
+              </div>
+              <div class="quadrant">
+                <div class="quadrant__label">↑ много визитов · через клиентов →</div>
+                <div class="quadrant__item"><strong>Veriff</strong><span>2,0 млн · 33% с сайтов клиентов</span></div>
+                <div class="quadrant__item"><strong>Didit</strong><span>2,3 млн · 22%</span></div>
+              </div>
+              <div class="quadrant">
+                <div class="quadrant__label">↓ мало визитов · ← сильный бренд</div>
+                <div class="quadrant__item"><strong>Shufti Pro</strong><span>729 тыс. · 14%</span></div>
+                <div class="quadrant__item"><strong>Jumio</strong><span>673 тыс. · 11%</span></div>
+                <div class="quadrant__item"><strong>Regula</strong><span>532 тыс. · 2%</span></div>
+              </div>
+              <div class="quadrant quadrant--accent">
+                <div class="quadrant__label">↓ мало визитов · через клиентов →</div>
+                <div class="quadrant__item"><strong>ComplyCube</strong><span>240 тыс. · 34%</span></div>
+                <div class="quadrant__item quadrant__item--us"><strong>Biometric</strong><span>19 тыс. · 40%</span></div>
+              </div>
+            </div>
+            <div class="quadrant-axis">
+              <span>← меньше переходов с сайтов клиентов</span>
+              <span>больше переходов с сайтов клиентов →</span>
+            </div>
+            <p class="chart-panel__sub"><strong>Persona — 46,3 млн</strong> на карту не ставим: Similarweb считает переходы из встроенных форм на чужих сайтах, цифра завышена.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 Traffic -->
+    <section class="slide slide--muted" id="s-traffic" data-title="Посещаемость">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · апр–июнь 2026</p>
+        <h2>Посещаемость сайтов за 3 месяца</h2>
+        <p class="lead">11 конкурентов + Biometric. Persona показан отдельно — сравнивать с остальными некорректно: на их домен попадают пользователи из встроенных форм на чужих сайтах.</p>
+        <div class="chart-box">
+          <div class="bar-chart" id="trafficBars"></div>
+        </div>
+        <p class="note">Persona (46,3 млн) — отдельно, не сравниваем. Длина полос — логарифмическая шкала.</p>
+        <div class="callout"><strong>Biometric (19 тыс.):</strong> global-домен biometric.vision. test2 в Similarweb отдельно не разбит.</div>
+      </div>
+    </section>
+
+    <!-- 5 Channels -->
+    <section class="slide" id="s-channels" data-title="Каналы трафика">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · апр–июнь 2026</p>
+        <h2>Из чего складывается трафик на сайт</h2>
+        <p class="lead">Два типа лидеров: <strong>сильный бренд</strong> (много прямых заходов) и <strong>через клиентов</strong> (много переходов с сайтов компаний, которые встроили KYC).</p>
+        <div class="chart-box">
+          <div class="stack-chart" id="channelBars"></div>
+          <div class="chart-legend">
+            <span><i style="background:var(--ch-direct)"></i>Прямые заходы</span>
+            <span><i style="background:var(--ch-ref)"></i>С сайтов клиентов</span>
+            <span><i style="background:var(--ch-org)"></i>Google органика</span>
+            <span><i style="background:var(--ch-paid)"></i>Google реклама</span>
+            <span><i style="background:var(--ch-social)"></i>Соцсети</span>
+            <span><i style="background:var(--ch-email)"></i>Email</span>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:10px;font-size:12px;"><strong>Цвета полос:</strong> жёлтый — прямые заходы · <strong>тёмно-зелёный</strong> — переходы с сайтов клиентов (embed) · <strong>светло-зелёный</strong> — органический Google · серый — платная реклама Google · чёрный (бледный) — соцсети · серый-тёмный — email. Подпись «…» раньше обрезала соцсети и email — теперь показываем все каналы.</div>
+        <div class="callout"><strong>Ondato:</strong> 37% «соцсети» = embed adult-платформ (fansly), не классический SMM.</div>
+      </div>
+    </section>
+
+    <!-- 7 Keywords (all-in-one) -->
+    <section class="slide slide--compact slide--dense" id="s-keywords" data-title="Запросы Google">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Что ищут в Google · Similarweb Search · 3 мес · 11 конкурентов</p>
+        <h2>Запросы в Google — по каким словам находят конкурентов</h2>
+        <div class="callout" style="margin-bottom:12px;font-size:12px;">
+          <strong>Как читать:</strong>
+          <strong>PPC</strong> — сколько компания тратит на рекламу в Google (оценка Similarweb). ·
+          <strong>YoY</strong> — рост за год (year-over-year, «год к году»). ·
+          <strong>🔍 SEO</strong> — по каким словам находят <u>бесплатно</u> в поиске. ·
+          <strong>💰 Реклама</strong> — за какие слова <u>платят</u> в Google Ads; <em>conquest</em> = реклама по названию конкурента. ·
+          Метрика в скобках: <strong>%</strong> = доля кликов этого канала на слово; <strong>число (напр. 2,6K)</strong> = оценка кликов в месяц.
+        </div>
+        <div class="comp-grid">
+          <div class="card comp-card"><h3>Sumsub · PPC высокий</h3>
+            <p style="margin:0 0 6px;"><strong>🔍 SEO:</strong> fake id (3,9%) · winzir (3,5%) · kyc verification (1,6%) · crypto friendly countries (1,1%)</p>
+            <p style="margin:0 0 6px;"><strong>💰 Реклама:</strong> kyc (6,4%) · persona (5,8%, conquest) · seon (2,7%, conquest) · lexisnexis (2,6%, conquest)</p>
+            <p class="note">Лидер трафика. Рекламу льёт на защиту бренда и перехват persona/seon (~$361K/3 мес только на главную).</p></div>
+          <div class="card comp-card"><h3>Veriff · PPC ~$65K+/3 мес</h3>
+            <p style="margin:0 0 6px;"><strong>🔍 SEO:</strong> guess my age (9,3%) · age estimator (8,2%) · how old do i look (5,3%) · fake id (3,6%)</p>
+            <p style="margin:0 0 6px;"><strong>💰 Реклама:</strong> sumsub (22,5%, conquest) · incode (13,1%, conquest) · onfido (9,6%, conquest) · legitimuz (10,3%, conquest)</p>
+            <p class="note">Топ-SEO — вирусная «угадай возраст», но это <u>не</u> покупатели KYC. Реклама почти вся conquest по конкурентам.</p></div>
+          <div class="card comp-card"><h3>Didit · PPC низкий (~$3K/кв)</h3>
+            <p style="margin:0 0 6px;"><strong>🔍 SEO:</strong> address guide KR (7,2%) · voice fraud RU (2,0%) · pakistan id card (1,9%) · roblox age verify RU (1,7%)</p>
+            <p style="margin:0 0 6px;"><strong>💰 Реклама:</strong> sumsub (4,4%, conquest) · stripe (2,4%) · yoti (2,3%, conquest) · veriff (1,8%, conquest)</p>
+            <p class="note">Ловит длинный хвост на RU/KR/urdu + перехват sumsub. Делает лендинги /switch/sumsub-alternative.</p></div>
+          <div class="card comp-card"><h3>Ondato · PPC $4,3K/кв · Search +479% YoY</h3>
+            <p style="margin:0 0 6px;"><strong>🔍 SEO:</strong> fansly (45,2%) · fein (1,8%) · age verification (1,0%) · best id verification software (1,0%) · shell companies (0,8%)</p>
+            <p style="margin:0 0 6px;"><strong>💰 Реклама:</strong> в основном по своему бренду (~$4,3K)</p>
+            <p class="note">Почти весь трафик — одна тема «fansly / проверка возраста» (adult-ниша). Узко, но горячо.</p></div>
+          <div class="card comp-card"><h3>Incode · PPC $116,8K/кв (больше всех!)</h3>
+            <p style="margin:0 0 6px;"><strong>🔍 SEO:</strong> слабая — 64% поиска идёт через рекламу (facecheck id, yoti age verification)</p>
+            <p style="margin:0 0 6px;"><strong>💰 Реклама:</strong> yoti (3,8K, conquest) · facecheck id (2,6K) · persona (1,5K, +5000%, conquest) · veriff (1,1K, conquest) — 100% через рекламу</p>
+            <p class="note">Покупает трафик деньгами, очень много conquest. Сильный бренд в Бразилии (Search 52,7K, +21% YoY).</p></div>
+          <div class="card comp-card"><h3>iDenfy · PPC $3,6K/кв</h3>
+            <p style="margin:0 0 6px;"><strong>🔍 SEO:</strong> nfc tag (2,6%) · id verification (2,5%) · virginia adult sites (1,7%) · ein verification (1,6%)</p>
+            <p style="margin:0 0 6px;"><strong>💰 Реклама:</strong> onfido (100% бюджета, conquest)</p>
+            <p class="note">Весь рекламный бюджет — на перехват одного бренда onfido. Основной рост — на органике и iGaming.</p></div>
+          <div class="card comp-card"><h3>Jumio · PPC $18,1K/кв · 70% ищут по бренду</h3>
+            <p style="margin:0 0 6px;"><strong>🔍 SEO:</strong> aretheyregistered.ca (1K) · authenticator app (810)</p>
+            <p style="margin:0 0 6px;"><strong>💰 Реклама:</strong> kyc (590) · persona (470, новое, conquest) · veriff (360, +227%, conquest)</p>
+            <p class="note">Сильный бренд (70% ищут по названию). Реклама — точечный conquest по persona/veriff (Search 91,9K).</p></div>
+          <div class="card comp-card"><h3>ComplyCube · Органика +492% YoY · $0 рекламы</h3>
+            <p style="margin:0 0 6px;"><strong>🔍 SEO:</strong> kyc solutions and pricing (230) · cdd due diligence (180) · aml crypto (160) · age verification face (150) · visage age rating (150)</p>
+            <p style="margin:0 0 6px;"><strong>💰 Реклама:</strong> почти нет (1,6% поиска · $0 PPC)</p>
+            <p class="note">Чистый SEO-рост под запросы малого бизнеса, без рекламного бюджета — модель, ближайшая к нам.</p></div>
+          <div class="card comp-card"><h3>Shufti Pro · PPC $7,6K/кв (+830% YoY)</h3>
+            <p style="margin:0 0 6px;"><strong>🔍 SEO:</strong> shufti pro (бренд) · kyc verification · shufti kyc</p>
+            <p style="margin:0 0 6px;"><strong>💰 Реклама:</strong> sumsub (3,6%, conquest) · kyc verification (2,1%) · yoti (conquest) · onfido (conquest)</p>
+            <p class="note">В основном ищут по бренду (UK). Рекламу нарастили ×9 за год — перехват sumsub/yoti/onfido.</p></div>
+          <div class="card comp-card"><h3>Regula · PPC $2,2K/кв · Search +13% YoY</h3>
+            <p style="margin:0 0 6px;"><strong>🔍 SEO:</strong> confidential document processing · ekyc · roblox age verify</p>
+            <p style="margin:0 0 6px;"><strong>💰 Реклама:</strong> минимальная (~$2,2K)</p>
+            <p class="note">Инженерный SEO вокруг проверки документов. Рекламу почти не покупают — техническая аудитория.</p></div>
+          <div class="card comp-card"><h3>Persona · PPC $864K/кв (рекорд) · 75% бренд</h3>
+            <p style="margin:0 0 6px;"><strong>🔍 SEO:</strong> onfido (conquest) · kyc · kyc verification · kyc compliance meaning</p>
+            <p style="margin:0 0 6px;"><strong>💰 Реклама:</strong> onfido (conquest) — бюджет $864K/кв, крупнейший на рынке</p>
+            <p class="note">Огромный рекламный бюджет + сильнейший бренд (75% ищут по названию). Много conquest по onfido.</p></div>
+        </div>
+        <div class="callout" style="margin-top:12px;font-size:12px;"><strong>Общие выводы:</strong> 1) Почти все крутят рекламу по чужим брендам (<em>conquest</em>: persona, veriff, onfido, yoti, sumsub) → нам тоже нужны «X-alternative» кампании. 2) Разброс бюджетов огромный: Incode тратит $116,8K/кв, ComplyCube — почти $0, но растёт на SEO +492% → <strong>деньги не единственный путь</strong>. 3) Реклама ≠ качество трафика: у Veriff топ-запросы про «угадай возраст», а не про KYC. 4) <strong>ComplyCube — наш ближайший ориентир по модели</strong>: SEO-контент под «pricing / aml / age verification» без большого бюджета.</div>
+      </div>
+    </section>
+
+    <!-- 8 Acquisition (merged, plain language) -->
+    <section class="slide slide--muted slide--compact slide--dense" id="s-acquisition" data-title="Как ищут клиентов">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Как конкуренты находят новых клиентов · простыми словами</p>
+        <h2>Откуда конкуренты берут новых клиентов</h2>
+        <div class="callout" style="margin-bottom:14px;">
+          <p style="margin:0 0 6px;"><strong>Важно не перепутать два разных потока трафика:</strong></p>
+          <p style="margin:0 0 4px;">1. <strong>Трафик «через клиентов»</strong> — это обычные люди, которые проходят проверку на сайтах компаний, уже купивших KYC. Это <u>не новые покупатели</u>, а конечные пользователи чужих сервисов. Много такого трафика ≠ много продаж.</p>
+          <p style="margin:0;">2. <strong>Привлечение новых компаний-покупателей</strong> — это то, как вендор находит новый бизнес: реклама, статьи и SEO, отзывы на G2, вебинары, партнёры, бесплатный тариф. Ниже — как именно это делает каждый, человеческим языком.</p>
+        </div>
+        <div class="comp-grid">
+          <div class="card comp-card"><h3>Sumsub</h3>
+            <p>Работает как <strong>контент- и бренд-машина</strong>. Ведёт ~170 рекламных объявлений в Meta, пишет гайды по iGaming и крипте, попал в отчёты Gartner, проводит вебинары и запустил обучающую «Sumsub Academy». Плюс Partner Hub — 400+ интеграторов сами приводят клиентов.</p>
+            <p class="note">Итог: 72% людей заходят напрямую (уже знают бренд), рассылки дают ещё ~6%.</p></div>
+          <div class="card comp-card"><h3>Veriff</h3>
+            <p>Сделал <strong>вирусные бесплатные игрушки</strong> — «угадай возраст по фото». Они дают ~9% трафика, но это случайные люди, а <u>не</u> покупатели KYC. Реальные продажи идут через компании, которые уже встроили Veriff. В соцсетях делает ставку на LinkedIn.</p>
+            <p class="note">Итог: треть трафика (33%) — с сайтов клиентов, а не новые лиды.</p></div>
+          <div class="card comp-card"><h3>Incode</h3>
+            <p><strong>Много платной рекламы + сильный бренд в Латинской Америке.</strong> Тратит на Google Ads больше всех — ~$116,8 тыс./квартал, в т.ч. по названиям конкурентов (yoti, persona, veriff). В Бразилии их хорошо знают.</p>
+            <p class="note">Итог: 84% заходят напрямую — узнаваемость в LATAM.</p></div>
+          <div class="card comp-card"><h3>Ondato</h3>
+            <p><strong>Ниша «проверка возраста» для adult-платформ.</strong> Заточились под запросы вроде «fansly» (45% органики) и лендинги про age verification. Растут за счёт узкой, но горячей ниши.</p>
+            <p class="note">Итог: почти половина трафика с клиентов — adult-сайты.</p></div>
+          <div class="card comp-card"><h3>Jumio</h3>
+            <p><strong>Классический «взрослый» enterprise-маркетинг.</strong> Ставка на статьи, whitepaper'ы, попадание в отчёты Gartner/Forrester и конференции. Продают крупным корпорациям долгим циклом.</p>
+            <p class="note">Итог: реклама ~$18 тыс., бренд узнаваем (70% ищут по названию).</p></div>
+          <div class="card comp-card"><h3>iDenfy</h3>
+            <p><strong>Бренд в iGaming + хорошие отзывы.</strong> 71% заходят напрямую, рейтинг 4,9★ на G2. Модель «платишь только за одобренную проверку». Рекламу почти не покупают — растут на органике и встраивании у букмекеров.</p>
+            <p class="note">Итог: недорогой рост без больших рекламных бюджетов.</p></div>
+          <div class="card comp-card"><h3>ComplyCube</h3>
+            <p><strong>SEO для малого бизнеса + дешёвый вход.</strong> Пишут статьи под запросы «цены на KYC», «AML для крипты» — органика выросла +492% за год. Вход $99/мес, много мелких финтех-встраиваний. Рекламу почти не покупают.</p>
+            <p class="note">Итог: наш сегмент по размеру — конкурируют ценой и контентом.</p></div>
+          <div class="card comp-card"><h3>Didit</h3>
+            <p><strong>Бесплатно + сообщество разработчиков (PLG).</strong> $0,33 за проверку, 500 бесплатных в месяц, поддержка MCP. Продвигаются в YouTube среди разработчиков, ловят длинный хвост запросов на русском/корейском/урду.</p>
+            <p class="note">Итог: растут без отзывов на G2 — за счёт цены и продукта.</p></div>
+          <div class="card comp-card"><h3>Shufti Pro</h3>
+            <p><strong>Средний UK-бренд на прямых заходах.</strong> 76% трафика — прямые заходы (люди уже знают бренд). Рекламу почти не покупают, но выкупают названия конкурентов (sumsub, onfido). Клиенты — в основном gaming и крипта, куда встроена их проверка.</p>
+            <p class="note">Итог: узнаваемость в UK/APAC + встраивание у gaming, без большого маркетинга.</p></div>
+          <div class="card comp-card"><h3>Regula</h3>
+            <p><strong>Инженерный SEO вокруг документов.</strong> Растут на органике по «forensic / document verification», продают SDK для проверки документов (часто on-prem). Аудитория — инженеры и госструктуры (много desktop-трафика), а не классические покупатели KYC-SaaS.</p>
+            <p class="note">Итог: смежный рынок, техническая аудитория, продажи через экспертный контент.</p></div>
+          <div class="card comp-card"><h3>Persona</h3>
+            <p><strong>Сильнейший бренд + огромная реклама + продукт для разработчиков.</strong> 75% ищут по названию, PPC ~$864 тыс./кв (в разы больше всех). Встроены у big-tech (GitHub, DoorDash, Twitch, OpenAI, Roblox). Authority-страница Gartner, dev/SDK-подход.</p>
+            <p class="note">Итог: enterprise US, тянут и брендом, и деньгами, и продуктом для разработчиков.</p></div>
+          <div class="card comp-card comp-card--us"><h3>Biometric (мы)</h3>
+            <p><strong>Что есть:</strong> 11 отраслей, MCP, кейсы в СНГ.<br><strong>Проблема:</strong> сайт даёт всего 19K визитов и 0% поискового трафика — нас просто не находят в Google.</p>
+            <p class="note">Что нужно: контент/SEO, партнёры, работа с отзывами и разбор выигранных/проигранных сделок в CRM.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 Industries -->
+    <section class="slide slide--muted slide--compact slide--dense" id="s-industries" data-title="Отрасли">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">В каких сферах сидят клиенты конкурентов · Similarweb</p>
+        <h2>Кто в каких отраслях работает</h2>
+        <p class="lead">Таблица показывает, в каких сферах у каждого конкурента больше всего клиентов. Так видно, за какие ниши они борются — и какие свободны для нас.</p>
+        <div class="callout" style="margin-bottom:10px;font-size:12px;">
+          <strong>Как читать значки:</strong> ✅✅ — сфера ключевая, много трафика (в скобках доля) · ✅ — присутствуют, но не главная сфера · — — почти нет клиентов в этой сфере.
+        </div>
+        <table>
+          <tr><th>Отрасль (простыми словами)</th><th>Sumsub</th><th>Veriff</th><th>Didit</th><th>iDenfy</th><th>Ondato</th><th>ComplyCube</th></tr>
+          <tr><td>Онлайн-игры и азартные игры</td><td>✅✅ 7–14%</td><td>✅</td><td>✅✅ 9%</td><td>✅</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Криптовалюты и финтех</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Adult-платформы (18+) / проверка возраста</td><td>—</td><td>✅</td><td>✅✅</td><td>✅</td><td>✅✅ 48%</td><td>—</td></tr>
+          <tr><td>Букмекеры и ставки</td><td>✅ 6%</td><td>✅</td><td>—</td><td>✅✅</td><td>✅</td><td>—</td></tr>
+          <tr><td>Биржи и трейдинг</td><td>—</td><td>✅✅ 29%</td><td>✅</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Проверка людей / гос-данные</td><td>—</td><td>—</td><td>✅✅ 14%</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr><td>Банки и госуслуги</td><td>✅ 4%</td><td>✅</td><td>—</td><td>✅</td><td>✅</td><td>✅</td></tr>
+        </table>
+        <div class="cols-2" style="margin-top:8px">
+          <div class="card"><h3>Соцсети — откуда идут посетители</h3>
+            <p style="margin:0;font-size:12px;">Sumsub и Veriff — из <strong>LinkedIn</strong> (деловая сеть). Didit — из <strong>YouTube</strong> (аудитория разработчиков). У Ondato «37% соцсети» — на самом деле встроенная проверка на adult-сайтах, а не реклама в соцсетях.</p>
+          </div>
+          <div class="card card--us"><h3>Где играем мы (Biometric.Vision)</h3>
+            <p style="margin:0;font-size:12px;">Банки Казахстана и России, такси, средний бизнес. <strong>Не</strong> идём в adult и «проверку людей». Наши козыри: установка на своём сервере, поддержка MCP и цена $0,33.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 Pricing -->
+    <section class="slide slide--compact" id="s-pricing" data-title="Цены">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Публичные тарифы · июль 2026</p>
+        <h2>Стоимость полной проверки личности</h2>
+        <p class="lead">Полная проверка = документ + живое лицо + сверка. Состав пакетов у разных компаний отличается.</p>
+        <div class="price-cards">
+          <div class="price-card"><div class="price-card__name">Didit</div><div class="price-card__price">$0,33</div><div class="price-card__meta">без минимума<br>500 бесплатно/мес</div></div>
+          <div class="price-card"><div class="price-card__name">Veriff</div><div class="price-card__price">от $0,80</div><div class="price-card__meta">мин. $49/мес</div></div>
+          <div class="price-card"><div class="price-card__name">Sumsub</div><div class="price-card__price">от $1,35</div><div class="price-card__meta">мин. $149/мес</div></div>
+          <div class="price-card"><div class="price-card__name">iDenfy</div><div class="price-card__price">от $1,35</div><div class="price-card__meta">от $135/мес</div></div>
+          <div class="price-card"><div class="price-card__name">Persona</div><div class="price-card__price">от $250</div><div class="price-card__meta">контракт 12 мес</div></div>
+          <div class="price-card price-card--us"><div class="price-card__name">Biometric (test2)</div><div class="price-card__price">$0,33</div><div class="price-card__meta">500 бесплатно/мес × 1 год</div></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Компания</th><th>За проверку</th><th>Минимум / мес</th><th>Бесплатный старт</th></tr>
+            </thead>
+            <tbody>
+              <tr class="row-us"><td><strong>Biometric (test2)</strong></td><td><strong>$0.33</strong></td><td>нет</td><td><strong>500/мес × 1 год</strong></td></tr>
+              <tr><td><strong>Didit</strong></td><td><strong>$0.33</strong></td><td>нет</td><td>500/мес навсегда</td></tr>
+              <tr><td><strong>Veriff</strong></td><td>от $0.80</td><td>$49/мес</td><td>15 дней trial</td></tr>
+              <tr><td><strong>Sumsub</strong></td><td>от $1.35</td><td>$149/мес</td><td>14 дней</td></tr>
+              <tr><td><strong>iDenfy</strong></td><td>от $1.35</td><td>от $135/мес</td><td>14 дней</td></tr>
+              <tr><td><strong>Persona</strong></td><td>по запросу</td><td>от $250/мес</td><td>программа для стартапов</td></tr>
+              <tr><td>ComplyCube</td><td>от ~$99/мес</td><td>пакет</td><td>trial</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 Competitors (all-in-one) -->
+    <section class="slide slide--muted slide--compact slide--dense" id="s-competitors" data-title="Карточки конкурентов">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Battlecards · все 11 конкурентов · Similarweb визиты 3 мес</p>
+        <h2>Карточки конкурентов</h2>
+        <div class="callout" style="margin-bottom:14px;font-size:12px;"><strong>Как читать карточку:</strong> <strong>«Продают»</strong> — чем конкурент силён, что он предлагает рынку. <strong>«Слабые»</strong> — его слабые места и ограничения. <strong>«Мы»</strong> — чем мы (Biometric.Vision) можем его обойти, наш аргумент против него в сделке. Цифра рядом с названием — визиты сайта за 3 мес (Similarweb).</div>
+        <div class="comp-grid">
+          <div class="card comp-card"><h3>Sumsub · 5,9 млн</h3>
+            <p><strong>Продают:</strong> KYC+AML+KYB, 4000+ клиентов, Partner Hub 400+.</p>
+            <p><strong>Слабые:</strong> $1.35+, мало СНГ, сложность.</p>
+            <p><strong>Мы:</strong> Liveness tiers · MCP · on-prem · CIS кейсы.</p></div>
+          <div class="card comp-card"><h3>Ondato · 4,0 млн</h3>
+            <p><strong>Продают:</strong> age verification (fansly), adult embed, №2 трафик.</p>
+            <p><strong>Слабые:</strong> 48% referral = adult, узкий ICP.</p>
+            <p><strong>Мы:</strong> Banking/mid-market, не adult niche.</p></div>
+          <div class="card comp-card"><h3>Incode · 2,4 млн</h3>
+            <p><strong>Продают:</strong> LATAM brand, Brazil #1, PPC $116,8K/кв.</p>
+            <p><strong>Слабые:</strong> 65% non-branded, referral 64% adult.</p>
+            <p><strong>Мы:</strong> СНГ · on-prem · не только paid.</p></div>
+          <div class="card comp-card"><h3>Didit · 2,3 млн</h3>
+            <p><strong>Продают:</strong> $0.33, MCP, 500 free, PLG.</p>
+            <p><strong>Слабые:</strong> adult/records ICP, слабее banking СНГ, нет G2.</p>
+            <p><strong>Мы:</strong> Regulated banking · качество · поддержка.</p></div>
+          <div class="card comp-card"><h3>Veriff · 2,0 млн</h3>
+            <p><strong>Продают:</strong> 12 500 документов, G2 лидер, video-first.</p>
+            <p><strong>Слабые:</strong> 33% embed-зависимость, viral age SEO ≠ KYC.</p>
+            <p><strong>Мы:</strong> Re-auth такси · CIS · честные цифры.</p></div>
+          <div class="card comp-card"><h3>iDenfy · 1,4 млн</h3>
+            <p><strong>Продают:</strong> 4.9★ G2, pay-per-approved, iGaming.</p>
+            <p><strong>Слабые:</strong> допы liveness/AML, средний tier.</p>
+            <p><strong>Мы:</strong> Liveness в базе · banking platform.</p></div>
+          <div class="card comp-card"><h3>Shufti Pro · 729K</h3>
+            <p><strong>Продают:</strong> 76% direct UK, in-house full stack.</p>
+            <p><strong>Слабые:</strong> gaming referral, средний tier.</p>
+            <p><strong>Мы:</strong> Banking · liveness · CIS кейсы.</p></div>
+          <div class="card comp-card"><h3>Jumio · 673K</h3>
+            <p><strong>Продают:</strong> enterprise SEO inbound, Fortune 500, branded 70%.</p>
+            <p><strong>Слабые:</strong> дорого, медленный sales cycle.</p>
+            <p><strong>Мы:</strong> Быстрый onboarding · $0.33 · СНГ.</p></div>
+          <div class="card comp-card"><h3>Regula · 532K</h3>
+            <p><strong>Продают:</strong> forensic/doc SEO, desktop 52%, on-prem.</p>
+            <p><strong>Слабые:</strong> смежный (не чистый KYC SaaS).</p>
+            <p><strong>Мы:</strong> KYC + liveness + banking workflow.</p></div>
+          <div class="card comp-card"><h3>ComplyCube · 240K</h3>
+            <p><strong>Продают:</strong> SEO SMB +492% YoY, entry $99/мес, 34% embed.</p>
+            <p><strong>Слабые:</strong> малый масштаб, thin liveness.</p>
+            <p><strong>Мы:</strong> Наш сегмент по размеру — цена + on-prem.</p></div>
+          <div class="card comp-card"><h3>Persona · 46 млн*</h3>
+            <p><strong>Продают:</strong> enterprise US, Gartner leader, dev/SDK embed (github, doordash, twitch). Branded 75%, PPC $864K/кв.</p>
+            <p><strong>Слабые:</strong> $250/мес × 12 контракт; *widget inflation — визиты не 1:1.</p>
+            <p><strong>Мы:</strong> Mid-market СНГ без годового контракта · on-prem.</p></div>
+        </div>
+        <p class="note">* Persona 46M — widget/SDK inflation, не сравнивать 1:1 по визитам. Порядок карточек — по трафику Similarweb.</p>
+      </div>
+    </section>
+
+    
+    <section class="slide slide--compact slide--dense" id="s-own" data-title="Наше досье">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Где мы сейчас · biometric.vision · Similarweb, 3 мес</p>
+        <h2>Наше досье: Biometric.Vision глазами рынка</h2>
+        <p class="lead">Честная картина: Similarweb нас почти не видит. Это не плохо — это чистый лист с огромным потенциалом. Конкуренты получают 100 тыс.–2 млн поисковых визитов в квартал, мы — около нуля.</p>
+        <div class="cols-2">
+          <div class="card"><h3>Что показывает Similarweb</h3>
+            <table>
+              <tr><th>Показатель</th><th>Значение</th></tr>
+              <tr><td>Поисковый трафик</td><td>≈0 (ниже порога оценки)</td></tr>
+              <tr><td>Ключевых слов отслеживается</td><td>56 (+133% за год)</td></tr>
+              <tr><td>В топ-3 Google</td><td>1 запрос</td></tr>
+              <tr><td>Расходы на рекламу</td><td>$0</td></tr>
+              <tr><td>Брендовый / небрендовый</td><td>22% / 78%</td></tr>
+              <tr><td>Главный регион</td><td>Россия</td></tr>
+            </table>
+          </div>
+          <div class="card"><h3>По каким словам нас находят</h3>
+            <p class="dossier-hint" style="margin:0 0 6px;">Всё — бесплатный поиск, рекламы нет:</p>
+            <div class="chips"><span class="chip">биометрик вижн (бренд) · 210</span><span class="chip">сравнение лиц · 160</span><span class="chip">kyc · 50</span><span class="chip">как сравнить изменения лица · 30</span><span class="chip">que es aml tv · 10</span></div>
+            <p class="dossier-hint" style="margin-top:8px;">Платных лендингов нет. Тематика узкая и RU-ориентированная.</p>
+          </div>
+        </div>
+        <div class="cols-2" style="margin-top:10px;">
+          <div class="card"><h3>Наши козыри против рынка</h3>
+            <div class="chips"><span class="chip">Цена $0,33 / проверка</span><span class="chip">On-prem (свой сервер)</span><span class="chip">MCP-интеграция</span><span class="chip">Быстрый старт</span></div>
+            <p style="margin:8px 0 0;font-size:12px;">Ровно по двум главным болям рынка из отзывов G2: <strong>цена</strong> и <strong>сложность внедрения</strong>.</p>
+          </div>
+          <div class="card card--us"><h3>Что делать (приоритет)</h3>
+            <p style="margin:0;font-size:12px;">1) <strong>SEO по словам категории</strong> (kyc, id/age verification, liveness) — у нас 56 ключей против тысяч у конкурентов. 2) <strong>Программа отзывов G2</strong> — у лидеров 40–208, у нас 0 → без этого не попадаем в шортлист. 3) <strong>Conquest-лендинги</strong> «vs Sumsub/Veriff» и «X-alternative» (приём Didit). 4) <strong>On-prem + MCP</strong> — уникальный угол с почти нулевой конкуренцией.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense" id="s-growth" data-title="Быстрорастущие">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">2023 референс Алибека + Similarweb 2026</p>
+        <h2>Быстрорастущие конкуренты за ~3 года</h2>
+        <table>
+          <tr><th>Компания</th><th>2023 / старт</th><th>2026 (3 мес)</th><th>Динамика</th><th>Сигнал</th></tr>
+          <tr><td><strong>Didit</strong></td><td>старт 2023</td><td>2,33 млн</td><td>×∞</td><td>YC · $3,3M ARR · PLG $0,33</td></tr>
+          <tr><td><strong>Ondato</strong></td><td>~1M est.</td><td>4,0 млн</td><td>≈×4</td><td>Search +479% YoY · fansly SEO</td></tr>
+          <tr><td><strong>ComplyCube</strong></td><td>малый base</td><td>240K</td><td>+492% org YoY</td><td>SMB embed · kyc pricing SEO</td></tr>
+          <tr><td><strong>Incode</strong></td><td>LATAM рост</td><td>2,35 млн</td><td>↑ brand</td><td>PPC $116,8K/кв · Brazil #1</td></tr>
+          <tr><td><strong>Veriff</strong></td><td>~2,0 млн</td><td>~2,0 млн</td><td>≈ flat</td><td>Стабилен · referral 33%</td></tr>
+          <tr><td><strong>Sumsub</strong></td><td>лидер</td><td>5,91 млн</td><td>↑ #1</td><td>Partner Hub · Meta 170 ads</td></tr>
+        </table>
+        <div class="callout" style="margin-top:8px;font-size:11px;"><strong>Вывод:</strong> Didit и Ondato — главные «новые силы». Veriff/Sumsub — удержали масштаб. ComplyCube — organic rocket на малой базе.</div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense" id="s-g2reviews" data-title="Что говорят клиенты">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Отзывы клиентов · G2 / Capterra / Trustpilot · лето 2026</p>
+        <h2>Что клиенты говорят о конкурентах</h2>
+        <p class="lead">Отзывы на G2 — это «сарафан» в B2B: покупатели читают их перед выбором. Показываем рейтинг, сколько отзывов (чем больше — тем весомее) и за что хвалят / ругают.</p>
+        <table>
+          <tr><th>Компания</th><th>G2</th><th>Отзывов</th><th>За что хвалят</th><th>На что жалуются</th></tr>
+          <tr><td><strong>iDenfy</strong></td><td>4.9</td><td><strong>208</strong></td><td>Поддержка №1, оплата только за одобренные проверки</td><td>Дашборд перегружен на больших объёмах</td></tr>
+          <tr><td><strong>ComplyCube</strong></td><td>5.0</td><td>~68</td><td>Всё-в-одном KYC+AML за $99, no-code</td><td>Отчёты только через API, не в интерфейсе</td></tr>
+          <tr><td><strong>Incode</strong></td><td>5.0</td><td>~52</td><td>Точность биометрии, проактивная поддержка</td><td>Цена «по запросу», сложная интеграция</td></tr>
+          <tr><td><strong>Regula</strong></td><td>4.9</td><td>34</td><td>Экспертиза документов, база шаблонов ID</td><td>Узкая ниша (форензика)</td></tr>
+          <tr><td><strong>Sumsub</strong></td><td>4.6</td><td>~112</td><td>Лучшее распознавание фрода, всё-в-одном</td><td>Сложно освоить, ложные срабатывания, простои</td></tr>
+          <tr><td><strong>Veriff</strong></td><td>4.5</td><td>56</td><td>Видео-проверка, API-документация, 190+ стран</td><td>Дорого для малых, трение камеры</td></tr>
+          <tr><td><strong>Shufti</strong></td><td>4.3</td><td>47</td><td>Глобальное покрытие, оркестрация</td><td>Разовый setup ~$2 500</td></tr>
+          <tr><td><strong>Persona</strong></td><td>4.3</td><td>43</td><td>Гибкие настройки, FedRAMP</td><td>Нужны инженеры, вход $250/мес</td></tr>
+          <tr><td><strong>Jumio</strong></td><td>4.1</td><td>16</td><td>Enterprise-масштаб (1B+ проверок)</td><td>Цена непрозрачна, отказы селфи, Trustpilot 1.6</td></tr>
+          <tr><td><strong>Ondato</strong></td><td>~4.7</td><td>~96</td><td>Быстрый комплаентный онбординг</td><td>—</td></tr>
+          <tr><td><strong>Didit</strong></td><td>нет</td><td>0</td><td>—</td><td>Нет отзывов на G2 (новый игрок)</td></tr>
+        </table>
+        <div class="cols-2" style="margin-top:10px;">
+          <div class="card"><h3>Что важно всем клиентам</h3>
+            <p style="margin:0;font-size:12px;"><strong>Хвалят:</strong> качество поддержки, простую интеграцию, «всё-в-одном» KYC+AML, понятную цену. <strong>Ругают:</strong> непрозрачную/дорогую цену (Jumio, Incode, Sumsub, Persona), сложность внедрения, ложные срабатывания.</p>
+          </div>
+          <div class="card card--us"><h3>Наши выводы (Biometric.Vision)</h3>
+            <p style="margin:0;font-size:12px;">1) Главная боль рынка — <strong>цена</strong>: наши прозрачные $0,33 бьют точно. 2) Вторая боль — <strong>сложность</strong>: наш быстрый старт + установка на своём сервере + MCP. 3) <strong>Отзывы на G2 — это ров</strong>: у лидеров 40–208, у нас 0 → нужна программа сбора отзывов, иначе нас не будет в шортлисте.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense" id="s-overlap" data-title="Пересечения аудиторий">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">С кем конкуренты делят аудиторию · Similarweb «Похожие сайты» · 3 мес</p>
+        <h2>Кто с кем «делит» одну и ту же аудиторию</h2>
+        <p class="lead">Similarweb показывает, какие сайты посещают одни и те же люди. Если аудитории двух сервисов сильно пересекаются — значит, покупатель сравнивает их в одном коротком списке (это прямые заменители). Ниже — что мы из этого узнали.</p>
+
+        <h3>1. Единое «ядро» рынка — эти 12 делят аудиторию почти со всеми</h3>
+        <p class="note" style="margin:0 0 8px;">У 10 из 11 конкурентов в топе «похожих» встречаются одни и те же компании. Это прямые заменители — с ними мы конкурируем за одного и того же покупателя.</p>
+        <table>
+          <tr><th>Компания</th><th>Кто это / чем берёт</th></tr>
+          <tr><td>Jumio</td><td>Enterprise-гигант, Fortune 500</td></tr>
+          <tr><td>Sumsub</td><td>Лидер по трафику, KYC+AML+KYB</td></tr>
+          <tr><td>Persona</td><td>Dev/SDK, клиенты big-tech (OpenAI, Roblox)</td></tr>
+          <tr><td>Incode</td><td>Биометрия, сильны в Латинской Америке</td></tr>
+          <tr><td>iDenfy</td><td>iGaming, отличные отзывы</td></tr>
+          <tr><td>Yoti</td><td>Проверка возраста (Великобритания)</td></tr>
+          <tr><td>Trulioo</td><td>Глобальные данные, проверка бизнеса (KYB)</td></tr>
+          <tr><td>AU10TIX</td><td>Enterprise-IDV (Израиль)</td></tr>
+          <tr><td>MetaMap</td><td>IDV для развивающихся рынков</td></tr>
+          <tr><td>Vouched · Notabene · Intellicheck</td><td>US-IDV · crypto travel-rule · валидация ID в США</td></tr>
+        </table>
+
+        <div class="cols-2" style="margin-top:12px;">
+          <div class="card"><h3>2. Новые конкуренты — их не было в нашем списке 11</h3>
+            <p class="note" style="margin:0 0 6px;">Сильно пересекаются с нашей категорией → добавить в мониторинг:</p>
+            <table>
+              <tr><td>AU10TIX</td><td>enterprise IDV</td></tr>
+              <tr><td>Yoti</td><td>age verification</td></tr>
+              <tr><td>Trulioo</td><td>KYB / данные</td></tr>
+              <tr><td>MetaMap</td><td>IDV emerging markets</td></tr>
+              <tr><td>Vouched</td><td>healthcare/US IDV</td></tr>
+              <tr><td>Notabene</td><td>crypto travel-rule</td></tr>
+              <tr><td>Intellicheck</td><td>US ID validation</td></tr>
+            </table>
+          </div>
+          <div class="card"><h3>3. Didit — уже «свой» на рынке</h3>
+            <p style="margin:0 0 6px;font-size:12px;">Didit попал в списки «похожих» у Sumsub, Veriff, iDenfy, Incode, Jumio, Persona — рынок уже считает его ровней (хотя ему всего пара лет).</p>
+            <p style="margin:0;font-size:12px;">При этом у Didit свой под-кластер — <strong>liveness / eID / для разработчиков</strong>:</p>
+            <div style="margin-top:4px;font-size:12px;color:var(--bv-ink-a70);">Private ID · Luxand · Liveness.com · Unico · itsme · Buypass</div>
+            <p style="margin:6px 0 0;font-size:12px;">Это ближе всего к нашему техническому позиционированию (on-prem / SDK).</p>
+          </div>
+        </div>
+
+        <div class="callout card--us" style="margin-top:12px;"><strong>Что это значит для нас (Biometric.Vision):</strong> 1) мы конкурируем сразу со всем «ядром» — покупатель держит короткий шортлист, и нам надо в него попасть; 2) наш ближний круг — dev/liveness-игроки (как под-кластер Didit), а не enterprise-гиганты; 3) сайты из этих кластеров — готовые площадки для партнёрств и рекламы, там сидит наша B2B-аудитория.</div>
+        <p class="note" style="margin-top:8px;"><strong>Оговорка:</strong> в trial точные проценты пересечения и affinity-скоры закрыты (нужен платный тариф). Показан порядок похожести как приближённая сила пересечения.</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense" id="s-keyword-gap" data-title="Keyword-gap">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">За что борются в Google · Similarweb Search · 3 мес</p>
+        <h2>Keyword-gap: за какие слова платят и что искать нам</h2>
+        <p class="lead">«Keyword-gap» = разрыв по словам: по каким запросам находят конкурентов, а нас — нет. Это готовый список, что забирать в наше SEO и в рекламу. Слова делятся на два типа: общий спрос категории и перехват чужих брендов.</p>
+
+        <div class="cols-2">
+          <div class="card"><h3>Тип 1. «Горячие» слова категории</h3>
+            <p class="note" style="margin:0 0 6px;">Общий спрос — по ним ищут решение, а не конкретный бренд. Сюда идём SEO-контентом (статьи, лендинги).</p>
+            <table>
+              <tr><th>Запрос</th><th>Смысл</th></tr>
+              <tr><td>kyc · kyc verification</td><td>ядро категории</td></tr>
+              <tr><td>id verification</td><td>проверка документов</td></tr>
+              <tr><td>age verification · guess my age</td><td>проверка возраста (18+)</td></tr>
+              <tr><td>fake id</td><td>защита от поддельных ID</td></tr>
+              <tr><td>aml · kyc pricing</td><td>комплаенс и цены</td></tr>
+              <tr><td>liveness · nfc id</td><td>технологии проверки</td></tr>
+            </table>
+          </div>
+          <div class="card"><h3>Тип 2. Перехват брендов (conquest)</h3>
+            <p class="note" style="margin:0 0 6px;">Реклама «в лоб» по названиям конкурентов: человек ищет чужой бренд — показывают своё объявление.</p>
+            <table>
+              <tr><th>Кто платит</th><th>По каким брендам бьёт</th></tr>
+              <tr><td>Didit</td><td>sumsub, yoti, iDenfy</td></tr>
+              <tr><td>Veriff</td><td>sumsub, incode, onfido</td></tr>
+              <tr><td>Incode</td><td>yoti, persona, veriff</td></tr>
+              <tr><td>Jumio</td><td>persona, veriff</td></tr>
+              <tr><td>Sumsub</td><td>persona</td></tr>
+              <tr><td>iDenfy · Persona</td><td>onfido</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="cols-2" style="margin-top:12px;">
+          <div class="card"><h3>Приём Didit — лендинги «X-alternative»</h3>
+            <p style="margin:0;font-size:12px;">Didit делает страницы вида <strong>didit.me/switch/sumsub-alternative</strong> (перехват клиентов Sumsub) и крутит на них рекламу, плюс отдельные лендинги под phone / id / email-verification. Дёшево и эффективно — поиск вырос на 297% за год.</p>
+          </div>
+          <div class="card card--us"><h3>Наш keyword-план (в таком порядке)</h3>
+            <p style="margin:0;font-size:12px;">1) SEO по «горячим» словам категории (kyc, age/id verification, liveness). 2) Conquest-реклама по лидерам: <strong>sumsub / veriff / persona / onfido alternative</strong>. 3) Лендинги «<strong>Biometric.Vision vs Sumsub/Veriff</strong>» с упором на цену $0,33 и on-prem. 4) Уникальный угол — <strong>on-prem + MCP</strong>: по этим словам конкуренции почти нет.</p>
+          </div>
+        </div>
+        <p class="note" style="margin-top:8px;"><strong>Источник:</strong> топ небрендовых запросов и платные лендинги (Similarweb Search Overview). Полные таблицы топ-25 в trial частично закрыты.</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense" id="s-pages" data-title="Топ-страницы">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Что продают конкуренты · Similarweb · денежные страницы · 3 мес</p>
+        <h2>Топ-страницы: какие страницы приносят трафик и деньги</h2>
+        <p class="lead">Самые «дорогие» посадочные страницы конкурентов (куда они льют рекламу) показывают, что для них главное — и какие приёмы копировать нам.</p>
+        <div class="callout" style="margin-bottom:12px;font-size:12px;"><strong>Что такое «Реклама, 3 мес»:</strong> это оценка Similarweb, <u>сколько компания потратила на рекламу в Google именно этой страницы за последние 3 месяца</u> (в долларах). Чем больше сумма — тем важнее для них эта страница как источник продаж. «—» = рекламу на страницу не льют (растёт за счёт SEO/прямых заходов).</p>
+        <div class="cols-2">
+          <div class="card"><h3>Sumsub</h3>
+            <table><tr><th>Страница</th><th>Реклама, 3 мес</th></tr>
+              <tr><td>главная (защита бренда)</td><td>$360,9K</td></tr>
+              <tr><td>/switch (перехват persona)</td><td>$41,3K</td></tr>
+              <tr><td>/id-verification</td><td>$3,1K</td></tr>
+              <tr><td>/tr (Турция)</td><td>—</td></tr>
+            </table>
+          </div>
+          <div class="card"><h3>Veriff</h3>
+            <table><tr><th>Страница</th><th>Реклама, 3 мес</th></tr>
+              <tr><td>/veriff-solutions</td><td>$65,1K</td></tr>
+              <tr><td>/brand-comparison/veriff-vs-sumsub</td><td>$31,8K</td></tr>
+              <tr><td>/brand-comparison/veriff-vs-onfido</td><td>$12,1K</td></tr>
+              <tr><td>/es/ · /pt-br/ (локализация)</td><td>—</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="cols-2" style="margin-top:10px;">
+          <div class="card"><h3>Persona</h3>
+            <table><tr><th>Страница</th><th>Реклама, 3 мес</th></tr>
+              <tr><td>/lp/contact (демо-захват)</td><td>$372,6K</td></tr>
+              <tr><td>/gartner-magic-quadrant (аналитика)</td><td>$223,7K</td></tr>
+              <tr><td>/lp/verification</td><td>$52,1K</td></tr>
+              <tr><td>/lp/identity-verification</td><td>$29,6K</td></tr>
+            </table>
+          </div>
+          <div class="card"><h3>Didit</h3>
+            <table><tr><th>Страница</th><th>Реклама, 3 мес</th></tr>
+              <tr><td>/products/phone-verification</td><td>$868</td></tr>
+              <tr><td>/switch/sumsub-alternative</td><td>$1,2K</td></tr>
+              <tr><td>/products/id-verification</td><td>$490</td></tr>
+              <tr><td>/products/email-verification</td><td>$143</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="cols-2" style="margin-top:10px;">
+          <div class="card"><h3>Общие приёмы (что копировать)</h3>
+            <p style="margin:0;font-size:12px;">1) <strong>Comparison / switch-страницы</strong> — «vs Sumsub», «X-alternative» (есть у Veriff, Sumsub, Didit). 2) <strong>Защита бренда</strong> рекламой. 3) <strong>Authority-страница</strong> (Persona — Gartner). 4) <strong>Локализация</strong> (/es, /pt-br, /tr). 5) <strong>Отдельная LP на каждый продукт</strong>.</p>
+          </div>
+          <div class="card card--us"><h3>Наши money-страницы (сделать)</h3>
+            <p style="margin:0;font-size:12px;">1) <strong>«Biometric.Vision vs Sumsub/Veriff»</strong> и <strong>«X-alternative»</strong> с упором на $0,33 и on-prem. 2) <strong>/on-premise</strong> и <strong>/mcp-integration</strong> — уникальный угол без конкуренции. 3) Продуктовые LP: сравнение лиц, liveness, KYC. 4) Локализация RU + EN.</p>
+          </div>
+        </div>
+        <div class="callout" style="margin-top:10px;font-size:11px;"><strong>Оговорка:</strong> органические Popular Pages в trial закрыты (Upgrade). Показаны платные посадочные — точный индикатор «что продают».</div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense" id="s-insights" data-title="Инсайты и артефакты">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Что делать · топ-30 рекомендаций из всего анализа</p>
+        <h2>Инсайты и артефакты: куда поднажать, чтобы о нас узнали</h2>
+        <p class="lead">Свод из всех данных (Similarweb, G2, поиск, реклама, пересечения). 30 конкретных шагов, сгруппированных по направлениям — от самого важного (нас не находят в поиске) к точечным. Каждый пункт опирается на найденный факт по конкурентам.</p>
+        <div class="comp-grid">
+          <div class="card comp-card"><h3>A. SEO и контент — нас не находят (0% поиска)</h3>
+            <p style="margin:0;font-size:12px;">1. Собрать SEO-ядро по «горячим» словам: <em>kyc, id/age verification, liveness, kyc pricing</em> — у нас 56 ключей против тысяч у конкурентов.<br>
+            2. Публиковать контент под воронку (как Veriff/Sumsub): гайды по KYC/AML, deepfake, liveness → CTA на демо в каждой статье.<br>
+            3. Отдельный лендинг на каждый продукт (сравнение лиц, liveness, KYC, KYB) — приём «одна LP = один продукт» у Persona/Didit.<br>
+            4. Рубрика «кейсы и истории мошенников» — у Sumsub такие посты дают максимум вовлечения.<br>
+            5. Локализовать сайт RU + EN (позже KZ) — у конкурентов /es, /pt-br, /tr тянут трафик из регионов.</p></div>
+
+          <div class="card comp-card"><h3>B. Отзывы и доверие — у нас 0 отзывов G2</h3>
+            <p style="margin:0;font-size:12px;">6. Запустить сбор отзывов на G2/Capterra — у лидеров 40–208; без них мы не попадаем в шортлист покупателя.<br>
+            7. Целиться в 4.8–4.9★ (как iDenfy): просить довольных клиентов СНГ оставить отзыв сразу после внедрения.<br>
+            8. Бить в две главные боли из отзывов конкурентов — <strong>цена</strong> и <strong>сложность внедрения</strong> (это ровно наши козыри).<br>
+            9. Сделать публичный Trust Center (SOC2 / пентест / DPA) — сокращает vendor-review с 6 до 2 недель.<br>
+            10. Собрать 3–5 публичных кейсов (банки КЗ/РФ, такси) с цифрами — proof-point №1 в enterprise-продажах.</p></div>
+
+          <div class="card comp-card"><h3>C. Реклама и перехват (conquest)</h3>
+            <p style="margin:0;font-size:12px;">11. Conquest-реклама по брендам лидеров: <em>sumsub / veriff / persona / onfido alternative</em> — так делают все.<br>
+            12. Comparison/switch-лендинги «Biometric.Vision vs Sumsub/Veriff» и «X-alternative» (приём Didit /switch/sumsub-alternative).<br>
+            13. Защита бренда: выкупить рекламу по своему названию, чтобы конкуренты не перехватывали.<br>
+            14. Не распыляться на дорогой охватный PPC (Incode льёт $116K/кв) — на старте точечный conquest дешевле и точнее.</p></div>
+
+          <div class="card comp-card"><h3>D. Уникальное позиционирование</h3>
+            <p style="margin:0;font-size:12px;">15. Двигать <strong>on-prem</strong> (свой сервер) как главный дифференциатор — по этим словам конкуренции почти нет.<br>
+            16. Двигать <strong>MCP-интеграцию</strong> — уникальный тех-угол (есть только у Didit), ловит разработчиков.<br>
+            17. <strong>$0,33 + 500 бесплатных/мес</strong> — прямой ответ на боль «дорого»; ставить в заголовок лендингов.<br>
+            18. Позиционироваться в под-кластере dev/liveness (как Didit), а не против enterprise-гигантов.</p></div>
+
+          <div class="card comp-card"><h3>E. Ниши и гео — где свободно</h3>
+            <p style="margin:0;font-size:12px;">19. Фокус: банки/финтех и такси СНГ (КЗ/РФ) — конкуренты туда почти не идут (у них US/UK/BR/LATAM).<br>
+            20. Не лезть в adult/age-verification (Ondato/Didit) и «проверку людей» — не наш ICP.<br>
+            21. Забрать нишу <strong>re-authentication</strong> (такси, платформы) — редкий, но растущий сценарий.<br>
+            22. Рассмотреть <strong>KYB</strong> (проверка бизнеса) — Trulioo/Sumsub на этом растут, спрос высокий.</p></div>
+
+          <div class="card comp-card"><h3>F. Партнёрства и площадки</h3>
+            <p style="margin:0;font-size:12px;">23. Запустить Partner Hub / реферальную программу — у Sumsub 400+ интеграторов сами приводят клиентов.<br>
+            24. Идти на площадки из кластера «похожих сайтов» — там уже сидит наша B2B-аудитория (реклама + контент-партнёрства).<br>
+            25. Попасть в каталоги/маркетплейсы (G2 category, cloud marketplaces) — источник inbound-лидов.</p></div>
+
+          <div class="card comp-card"><h3>G. Outreach: email + LinkedIn (детально — след. слайд)</h3>
+            <p style="margin:0;font-size:12px;">26. Team-led контент в LinkedIn: посты с личных профилей команды 3–5/нед (у Sumsub LinkedIn — топ-канал, VTR 41,5%).<br>
+            27. Мультиканальные цепочки LinkedIn+email: 5 касаний за 14 дней (стандарт 2026, reply 8–15%).<br>
+            28. Таргет по ролям ICP: CCO / MLRO / Head of Risk / CTO — каждому своё сообщение, не один шаблон на всех.<br>
+            29. Сигнальный таргетинг: новые лицензии, раунды, найм комплаенс-команды, выход на новые рынки.<br>
+            30. Вебинары/демо-контент (у Veriff +40% к качеству лидов) и обучающая «Academy» (как Sumsub).</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="slide slide--compact slide--dense" id="s-outreach" data-title="Email + LinkedIn">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Разбор по каждому конкуренту · LinkedIn и Email · для нашего аутрич-агентства</p>
+        <h2>Email + LinkedIn: что делают, кому и как пишут</h2>
+
+        <h3>Что делает каждый конкурент (конкретно)</h3>
+        <p class="note" style="margin:0 0 8px;">Механики сильно разные: одни строят бренд контентом, другие — чистый outbound-конвейер, третьи растут продуктом. Смотри, что применимо нам.</p>
+        <table>
+          <tr><th>Конкурент</th><th>LinkedIn</th><th>Email / другое</th></tr>
+          <tr><td><strong>Sumsub</strong></td><td>Топ-канал. Кампания «Beast» (VTR 41,5%). <strong>Team-led</strong>: посты с личных профилей команды, 3–5/нед — кейсы, «истории мошенников», бенчмарки</td><td>Блог Sumsuber, «Sumsub Academy», рассылки (~6% трафика), Partner Hub 400+ интеграторов, ~170 объявлений в Meta</td></tr>
+          <tr><td><strong>Jumio</strong></td><td>Paid social + thought leadership от лица CMO/руководителей, 53K подписчиков; вебинары SBC/gaming</td><td>ABM (маркетинг = 60–70% пайплайна), «Online Fraud Report» (500K скачиваний), персональные email-nurture, ивенты Money20/20, RSA</td></tr>
+          <tr><td><strong>Onfido</strong> (Entrust)</td><td>Sponsored posts + programmatic; кампания «Real Identity in an AI World» / Liveness 2.0 (+45% запросов демо)</td><td>Ежегодный «Identity Fraud Report», подкаст «Inside the Fraud Lab» + видео, dev через GitHub, ABM на HubSpot+Salesforce</td></tr>
+          <tr><td><strong>Veriff</strong></td><td>Платный LinkedIn по <em>intent-сигналам</em> («biometric authentication», «fraud prevention»); видео и вебинары (+40% к качеству лидов)</td><td>Email-nurture под воронку; onboarding День 0/1/3; newsletter «тренды фрода»; тема письма конкретная, объясняют «почему просим данные»</td></tr>
+          <tr><td><strong>Incode</strong></td><td>Exec LinkedIn-реклама на C-suite (гостиницы/gaming/финансы); narrative-кампании</td><td>Privacy-whitepaper'ы, «живые» демо на ивентах, премиум-enterprise позиционирование</td></tr>
+          <tr><td><strong>Shufti Pro</strong></td><td>100+ LinkedIn-кампаний, TOFU-реклама + social selling через Sales Navigator</td><td><strong>Outbound-конвейер:</strong> Apollo (35+ email-кампаний) + 6sense (intent-данные) + HubSpot (MOFU-nurture), таргет Tier 1/2 по интенту</td></tr>
+          <tr><td><strong>Persona</strong></td><td><strong>Бренд-хак:</strong> их проверка встроена в верификацию профилей LinkedIn — логотип видят миллионы. Dev-контент «identity as code»</td><td>Ставка на продукт и разработчиков; классической рассылки почти нет — рост за счёт встроенности</td></tr>
+          <tr><td><strong>Didit</strong></td><td>Community для разработчиков: YouTube, Discord, agent-native (MCP)</td><td>Comparison-блог «Didit vs Sumsub/Shufti» (перехват), бесплатный тариф как крючок</td></tr>
+          <tr><td><strong>iDenfy</strong></td><td>LinkedIn меньше — ставка на SEO</td><td>Контент под решение о покупке: «best / vs / pricing», простые гайды, 2× «лучший на G2»</td></tr>
+          <tr><td><strong>ComplyCube</strong></td><td>Небольшая команда, органический контент</td><td>Low/no-code онбординг как крючок, media/PR, SEO под «pricing/aml»</td></tr>
+          <tr><td><strong>Ondato / Regula</strong></td><td>Нишевый контент (Ondato — проверка возраста/adult; Regula — форензика документов, инженеры)</td><td>SEO-driven; публичного аутрича мало</td></tr>
+        </table>
+        <div class="callout" style="margin-top:10px;font-size:12px;"><strong>Чем отличаются механики (4 модели):</strong> 1) <strong>Контент + бренд</strong> — Sumsub, Jumio, Onfido (report / подкаст / вебинары). 2) <strong>Outbound-конвейер</strong> — Shufti (Apollo + 6sense + HubSpot, чистый холодный аутрич по интенту). 3) <strong>Продуктовый рост</strong> — Persona (встроенность), Didit (dev-community + free tier). 4) <strong>Paid social по intent</strong> — Veriff, Incode (реклама на тех, кто уже ищет решение).</div>
+
+        <div class="cols-2" style="margin-top:12px;">
+          <div class="card"><h3>Кому пишут (роли ICP)</h3>
+            <p style="margin:0 0 6px;font-size:12px;">В KYC/RegTech решение принимает <strong>комитет</strong> — писать надо параллельно нескольким ролям, каждому своё:</p>
+            <table>
+              <tr><th>Роль</th><th>Что ей важно</th></tr>
+              <tr><td>Chief Compliance Officer / MLRO</td><td>соответствие, аудит, снижение риска</td></tr>
+              <tr><td>Head of Risk / Fraud</td><td>ловля мошенников, точность</td></tr>
+              <tr><td>CTO / Head of Eng</td><td>лёгкая интеграция, SDK/API, on-prem</td></tr>
+              <tr><td>Head of Product / Payments</td><td>конверсия онбординга, скорость</td></tr>
+              <tr><td>CFO / закупки</td><td>цена, ROI, vendor-risk</td></tr>
+            </table>
+          </div>
+          <div class="card"><h3>Что изучают ПЕРЕД письмом (сигналы)</h3>
+            <p style="margin:0 0 6px;font-size:12px;">3–5 минут ресёрча на человека. Хорошее сообщение «мог отправить только этому человеку». Триггеры «окна покупки»:</p>
+            <table>
+              <tr><td>Новая лицензия / регуляторное требование</td></tr>
+              <tr><td>Раунд инвестиций / выход на новый рынок</td></tr>
+              <tr><td>Найм в комплаенс / появление MLRO</td></tr>
+              <tr><td>Свежий пост или комментарий человека</td></tr>
+              <tr><td>Смена роли за последние 90 дней</td></tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px;"><h3>Как выстроена цепочка (стандарт 2026, мультиканал LinkedIn + Email)</h3>
+          <table>
+            <tr><th>День</th><th>Действие</th><th>Смысл</th></tr>
+            <tr><td>0</td><td>Просмотр профиля + 1-е письмо по триггеру</td><td>«тёплый» контакт, зацепка по сигналу — не питчить</td></tr>
+            <tr><td>2–3</td><td>Заявка в LinkedIn с персональной запиской (&lt;300 симв.)</td><td>ссылка на тот же сигнал, без продажи</td></tr>
+            <tr><td>4–5</td><td>Лайк/коммент к их постам + первое сообщение-польза</td><td>прогрев, ценность до просьбы</td></tr>
+            <tr><td>7</td><td>Письмо с одним пруфом (кейс / SOC2 / метрика)</td><td>evidence-first, доверие</td></tr>
+            <tr><td>10–11</td><td>Мягкий CTA («сравним подходы за 15 мин?»)</td><td>лёгкое приглашение, не «купи»</td></tr>
+            <tr><td>14</td><td>Финальное касание / break-up + полезный материал</td><td>50–70% ответов приходят на 2–3-е касание</td></tr>
+          </table>
+          <p class="note" style="margin-top:6px;">Норма: принятие заявок 28–42%, ответы 8–15%. Персонализировать первую строку, остальное — шаблон. Письма — простой текст, без картинок и кучи ссылок (спам-фильтры). Всегда unsubscribe + GDPR-основание.</p>
+        </div>
+
+        <div class="callout card--us" style="margin-top:12px;"><strong>Готовый плейбук для Biometric.Vision:</strong> 1) LinkedIn — team-led посты (основатель + инженеры), 3/нед, темы: on-prem, MCP, цена $0,33, кейсы СНГ. 2) Email — nurture под воронку + newsletter «тренды фрода». 3) Цепочка выше, ролям CCO/MLRO/CTO — разные месседжи. 4) Перед письмом — 3–5 мин ресёрча по сигналам (лицензии, раунды, найм комплаенс). 5) Главный пруф в первом касании — цена $0,33, on-prem и кейс банка. 6) Trust Center заранее — снимает vendor-risk и ускоряет сделку.</div>
+        <p class="note" style="margin-top:8px;"><strong>Источники:</strong> публичные LinkedIn-профили и кампании конкурентов (Sumsub «Beast», Jumio Online Fraud Report, Onfido «Fraud Lab», Persona-верификация LinkedIn, Shufti — по описанию их growth-специалиста: Apollo/6sense/HubSpot), материалы Veriff и iDenfy по маркетингу, разборы ABM в RegTech/Fintech и LinkedIn-плейбуки 2026. Точные тексты чужих email-цепочек закрыты — показаны публичные паттерны и механики.</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier" id="s-dossier-didit" data-title="Досье Didit">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb dossier · didit.me · апр–июнь 2026</p>
+        <h2>Didit</h2>
+        <p class="dossier-kpi"><span><strong>2,33 млн</strong> визитов / 3 мес</span> · <span>Mobile 74% · Desktop 26%</span> · <span>Geo: US #1</span></p>
+        <p class="lead" style="font-size:11px;margin:0 0 10px;">Основан 2023 · YC W26 · fastest new entrant</p>
+
+        <div class="dossier-cols2">
+          <div>
+            <h3>1. Каналы трафика</h3>
+            <div class="sw-chart"><img src="assets/similarweb/didit-channels.svg" alt="Каналы Didit"></div>
+          </div>
+          <div>
+            <h3>2. География — топ-5 стран</h3>
+            <p class="dossier-hint">Доля трафика = сколько посетителей из страны. «Ушли сразу» = % тех, кто закрыл сайт на первой странице.</p>
+            <table><tr><th>Страна</th><th>Доля трафика</th><th>Ушли сразу</th></tr><tr><td>United States</td><td>19,5%</td><td>13,5%</td></tr><tr><td>Brazil</td><td>9,3%</td><td>25,4%</td></tr><tr><td>India</td><td>5,5%</td><td>27,6%</td></tr><tr><td>Bangladesh</td><td>4,3%</td><td>33,7%</td></tr><tr><td>Argentina</td><td>3,8%</td><td>61,7%</td></tr></table>
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px;">3. Клиенты — сайты, куда встроена их проверка</h3>
+        <p class="dossier-hint">Это компании, которые уже пользуются сервисом (по данным о переходах). Доля = сколько такого трафика приходит с этого сайта.</p>
+        <table><tr><th>#</th><th>Домен</th><th>Доля</th><th>Бизнес</th></tr><tr><td>1</td><td>beenverified.com</td><td>24,8%</td><td>records</td></tr><tr><td>2</td><td>app.feetfinder.com</td><td>13,6%</td><td>adult</td></tr><tr><td>3</td><td>wiapy.com</td><td>9,8%</td><td>records</td></tr><tr><td>4</td><td>somoslank.com</td><td>6,3%</td><td>контент</td></tr><tr><td>5</td><td>promptchan.com</td><td>5,8%</td><td>AI/adult</td></tr><tr><td>6</td><td>dashboard.lowify.com.br</td><td>5,3%</td><td>финтех BR</td></tr><tr><td>7</td><td>starpets.gg</td><td>3,8%</td><td>gaming</td></tr><tr><td>8</td><td>epicsweep.us</td><td>2,6%</td><td>sweepstakes</td></tr><tr><td>9</td><td>app.bit2me.com</td><td>2,5%</td><td>crypto</td></tr><tr><td>10</td><td>electronicsbuyer.gg</td><td>2,0%</td><td>gaming</td></tr></table>
+
+        <div class="dossier-grid" style="margin-top:12px;">
+          <div><h3>Запросы в Google (бесплатные)</h3><p class="dossier-hint">По каким словам их находят в поиске без рекламы:</p><div class="chips"><span class="chip">주소가이드</span><span class="chip">сравнение лиц</span><span class="chip">roblox age verify RU</span></div></div>
+          <div><h3>Реклама в Google (платная)</h3><p class="dossier-hint">За какие слова платят в Google (часто — названия конкурентов):</p><div class="chips"><span class="chip">sumsub (99% платно)</span><span class="chip">kyc</span><span class="chip">yoti</span><span class="chip">idfy</span><span class="chip">лендинг /switch/sumsub-alternative</span></div></div>
+          <div><h3>Отрасли клиентов</h3><p class="dossier-hint">На сайтах каких сфер встроена их проверка (по переходам-referral):</p><div class="chips"><span class="chip">Проверка людей и данных 14%</span><span class="chip">adult-платформы 10%</span><span class="chip">игры 9%</span></div></div>
+          <div><h3>Соцсети</h3><p class="dossier-hint">Из каких соцсетей приходят посетители на сайт:</p><div class="chips"><span class="chip">YouTube 87%</span><span class="chip">LinkedIn 11%</span></div></div>
+          <div><h3>Пол и возраст аудитории</h3><p class="dossier-hint">Пол и возраст реальных посетителей сайта (Similarweb, 3 мес):</p>
+          <div class="chips"><span class="chip">Мужчины 51,5%</span><span class="chip">Женщины 48,5%</span></div>
+          <div class="chips" style="margin-top:4px;"><span class="chip">18–24: 14,8%</span><span class="chip">25–34: 25,9%</span><span class="chip">35–44: 22,5%</span><span class="chip">45–54: 18,4%</span><span class="chip">55–64: 11,5%</span><span class="chip">65+: 6,9%</span></div></div>
+          <div><h3>Вывод простыми словами</h3><p>Дёшево ($0,33 за проверку) и удобно для разработчиков — прямой конкурент нашему test2. Их клиенты: сайты проверки людей, adult и игры, а не банки СНГ.</p></div>
+        </div>
+        <p class="note" style="margin-top:10px;">→ следующий слайд: скриншоты Similarweb (search, referrals, geo)</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier slide--dossier-evidence" id="s-dossier-didit-sw" data-title="Didit — SW">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · didit.me · апр–июнь 2026 · Worldwide</p>
+        <h2>Didit — данные Similarweb</h2>
+        <div class="sw-shots-stack">
+          <figure class="sw-shot sw-shot--search">
+            <figcaption>Similarweb — Поиск в Google — бесплатный · платный · по названию бренда</figcaption>
+            <img src="assets/similarweb/screenshots/didit-search.png" alt="Поиск в Google — бесплатный · платный · по названию бренда didit" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--referrals">
+            <figcaption>Similarweb — Переходы с сайтов клиентов — визиты · топ-сайты · сферы</figcaption>
+            <img src="assets/similarweb/screenshots/didit-referrals.png" alt="Переходы с сайтов клиентов — визиты · топ-сайты · сферы didit" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--geo">
+            <figcaption>Similarweb — География — из каких стран заходят</figcaption>
+            <img src="assets/similarweb/screenshots/didit-geo.png" alt="География — из каких стран заходят didit" loading="lazy">
+          </figure></div>
+        <div class="callout" style="margin-top:14px;font-size:12px;"><strong>Как читать:</strong> «переходы с сайтов клиентов» — это обычные люди, которые проходят проверку там, где уже встроен сервис, а не новые компании-покупатели.</div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier" id="s-dossier-shufti" data-title="Досье Shufti Pro">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb dossier · shuftipro.com · апр–июнь 2026</p>
+        <h2>Shufti Pro</h2>
+        <p class="dossier-kpi"><span><strong>729K</strong> визитов / 3 мес</span> · <span>Mobile 66% · Desktop 34%</span> · <span>Geo: UK #1</span> · <span>15% branded · 85% non-branded</span> · <span>Search +67% YoY · PPC $7,6K (+830%)</span></p>
+        <p class="lead" style="font-size:11px;margin:0 0 10px;">76% direct — UK/APAC brand</p>
+
+        <div class="dossier-cols2">
+          <div>
+            <h3>1. Каналы трафика</h3>
+            <div class="sw-chart"><img src="assets/similarweb/shufti-channels.svg" alt="Каналы Shufti Pro"></div>
+          </div>
+          <div>
+            <h3>2. География — топ-5 стран</h3>
+            <p class="dossier-hint">Доля трафика = сколько посетителей из страны. «Ушли сразу» = % тех, кто закрыл сайт на первой странице.</p>
+            <table><tr><th>Страна</th><th>Доля трафика</th><th>Ушли сразу</th></tr><tr><td>United States</td><td>10,9%</td><td>78,6%</td></tr><tr><td>United Kingdom</td><td>9,3%</td><td>60,3%</td></tr><tr><td>Brazil</td><td>5,2%</td><td>46,7%</td></tr><tr><td>Pakistan</td><td>4,5%</td><td>18,4%</td></tr><tr><td>Germany</td><td>4,1%</td><td>39,0%</td></tr></table>
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px;">3. Клиенты — сайты, куда встроена их проверка</h3>
+        <p class="dossier-hint">Это компании, которые уже пользуются сервисом (по данным о переходах). Доля = сколько такого трафика приходит с этого сайта.</p>
+        <table><tr><th>#</th><th>Домен</th><th>Доля</th><th>Бизнес</th></tr><tr><td>1</td><td>hypedrop.com</td><td>топ-1</td><td>gaming/кейсы</td></tr><tr><td>2</td><td>csgoroll.com</td><td>2</td><td>gaming/gambling</td></tr><tr><td>3</td><td>u7buy.com</td><td>3</td><td>gaming</td></tr><tr><td>4</td><td>rewarble.com</td><td>4</td><td>гифт-карты</td></tr><tr><td>5</td><td>zumo.us</td><td>5</td><td>crypto</td></tr><tr><td>6</td><td>useme.com</td><td>6</td><td>фриланс</td></tr><tr><td>7</td><td>coinz.us</td><td>7</td><td>crypto</td></tr><tr><td>8</td><td>bet-at-home.de</td><td>8</td><td>беттинг DE</td></tr><tr><td>9</td><td>casino.click</td><td>9</td><td>казино</td></tr><tr><td>10</td><td>betwhale.ag</td><td>10</td><td>беттинг</td></tr></table>
+
+        <div class="dossier-grid" style="margin-top:12px;">
+          <div><h3>Запросы в Google (бесплатные)</h3><p class="dossier-hint">По каким словам их находят в поиске без рекламы:</p><div class="chips"><span class="chip">shufti pro</span><span class="chip">kyc verification</span><span class="chip">shufti kyc</span></div></div>
+          <div><h3>Реклама в Google (платная)</h3><p class="dossier-hint">За какие слова платят в Google (часто — названия конкурентов):</p><div class="chips"><span class="chip">sumsub 3,6%</span><span class="chip">kyc verification 2,1%</span><span class="chip">yoti</span><span class="chip">onfido</span></div></div>
+          <div><h3>Отрасли клиентов</h3><p class="dossier-hint">На сайтах каких сфер встроена их проверка (по переходам-referral):</p><div class="chips"><span class="chip">Игры и видео 20%</span><span class="chip">IT 8%</span><span class="chip">финансы 5%</span><span class="chip">казино 4%</span></div></div>
+          <div><h3>Соцсети</h3><p class="dossier-hint">Из каких соцсетей приходят посетители на сайт:</p><div class="chips"><span class="chip">В основном LinkedIn</span><span class="chip">немного YouTube</span></div></div>
+          <div><h3>Пол и возраст аудитории</h3><p class="dossier-hint">Пол и возраст реальных посетителей сайта (Similarweb, 3 мес):</p>
+          <div class="chips"><span class="chip">Мужчины 58,5%</span><span class="chip">Женщины 41,5%</span></div>
+          <div class="chips" style="margin-top:4px;"><span class="chip">18–24: 14,0%</span><span class="chip">25–34: 25,0%</span><span class="chip">35–44: 26,0%</span><span class="chip">45–54: 18,7%</span><span class="chip">55–64: 10,4%</span><span class="chip">65+: 5,8%</span></div></div>
+          <div><h3>Вывод простыми словами</h3><p>Средний по размеру бренд из Великобритании. Рекламируется по названиям конкурентов (Sumsub, Yoti). Трафик клиентов — в основном игровые сайты.</p></div>
+        </div>
+        <p class="note" style="margin-top:10px;">→ следующий слайд: скриншоты Similarweb (search, referrals, geo)</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier slide--dossier-evidence" id="s-dossier-shufti-sw" data-title="Shufti Pro — SW">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · shuftipro.com · апр–июнь 2026 · Worldwide</p>
+        <h2>Shufti Pro — данные Similarweb</h2>
+        <div class="sw-shots-stack">
+          <figure class="sw-shot sw-shot--search">
+            <figcaption>Similarweb — Поиск в Google — бесплатный · платный · по названию бренда</figcaption>
+            <img src="assets/similarweb/screenshots/shufti-search.png" alt="Поиск в Google — бесплатный · платный · по названию бренда shufti" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--referrals">
+            <figcaption>Similarweb — Переходы с сайтов клиентов — визиты · топ-сайты · сферы</figcaption>
+            <img src="assets/similarweb/screenshots/shufti-referrals.png" alt="Переходы с сайтов клиентов — визиты · топ-сайты · сферы shufti" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--geo">
+            <figcaption>Similarweb — География — из каких стран заходят</figcaption>
+            <img src="assets/similarweb/screenshots/shufti-geo.png" alt="География — из каких стран заходят shufti" loading="lazy">
+          </figure></div>
+        <div class="callout" style="margin-top:14px;font-size:12px;"><strong>Как читать:</strong> «переходы с сайтов клиентов» — это обычные люди, которые проходят проверку там, где уже встроен сервис, а не новые компании-покупатели.</div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier" id="s-dossier-veriff" data-title="Досье Veriff">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb dossier · veriff.com · апр–июнь 2026</p>
+        <h2>Veriff</h2>
+        <p class="dossier-kpi"><span><strong>1,995 млн</strong> визитов / 3 мес</span> · <span>Mobile 67% · Desktop 33%</span> · <span>Geo: US #1</span></p>
+        <p class="lead" style="font-size:11px;margin:0 0 10px;">2023 ≈ 2M — стабилен 3 года · referral 33%</p>
+
+        <div class="dossier-cols2">
+          <div>
+            <h3>1. Каналы трафика</h3>
+            <div class="sw-chart"><img src="assets/similarweb/veriff-channels.svg" alt="Каналы Veriff"></div>
+          </div>
+          <div>
+            <h3>2. География — топ-5 стран</h3>
+            <p class="dossier-hint">Доля трафика = сколько посетителей из страны. «Ушли сразу» = % тех, кто закрыл сайт на первой странице.</p>
+            <table><tr><th>Страна</th><th>Доля трафика</th><th>Ушли сразу</th></tr><tr><td>United States</td><td>38,2%</td><td>82,9%</td></tr><tr><td>United Kingdom</td><td>9,4%</td><td>61,3%</td></tr><tr><td>Canada</td><td>6,9%</td><td>45,1%</td></tr><tr><td>India</td><td>3,6%</td><td>66,0%</td></tr><tr><td>Mexico</td><td>2,5%</td><td>52,4%</td></tr></table>
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px;">3. Клиенты — сайты, куда встроена их проверка</h3>
+        <p class="dossier-hint">Это компании, которые уже пользуются сервисом (по данным о переходах). Доля = сколько такого трафика приходит с этого сайта.</p>
+        <table><tr><th>#</th><th>Домен</th><th>Доля</th><th>Бизнес</th></tr><tr><td>1</td><td>veriff.me</td><td>14,0%</td><td>свой виджет</td></tr><tr><td>2</td><td>app.alpha-futures.com</td><td>13,9%</td><td>трейдинг</td></tr><tr><td>3</td><td>earnhaus.com</td><td>10,6%</td><td>инвестиции</td></tr><tr><td>4</td><td>worldpackers.com</td><td>8,2%</td><td>travel</td></tr><tr><td>5</td><td>bangcoins.com</td><td>5,6%</td><td>crypto</td></tr><tr><td>6</td><td>mycashery.com</td><td>3,8%</td><td>финтех</td></tr><tr><td>7</td><td>bigshotgames.com</td><td>2,4%</td><td>gaming</td></tr><tr><td>8</td><td>launchpadjv.com</td><td>2,4%</td><td>JV</td></tr><tr><td>9</td><td>app.nekohealth.com</td><td>2,4%</td><td>healthtech</td></tr><tr><td>10</td><td>stake.us</td><td>2,1%</td><td>iGaming US</td></tr></table>
+
+        <div class="dossier-grid" style="margin-top:12px;">
+          <div><h3>Запросы в Google (бесплатные)</h3><p class="dossier-hint">По каким словам их находят в поиске без рекламы:</p><div class="chips"><span class="chip">guess my age 9,3%</span><span class="chip">age estimator 8,2%</span><span class="chip">fake id 3,6%</span></div></div>
+          <div><h3>Реклама в Google (платная)</h3><p class="dossier-hint">За какие слова платят в Google (часто — названия конкурентов):</p><div class="chips"><span class="chip">sumsub 22,5%</span><span class="chip">incode 13%</span><span class="chip">onfido 10%</span></div></div>
+          <div><h3>Отрасли клиентов</h3><p class="dossier-hint">На сайтах каких сфер встроена их проверка (по переходам-referral):</p><div class="chips"><span class="chip">Инвестиции 29%</span><span class="chip">путешествия 6%</span><span class="chip">игры 3%</span></div></div>
+          <div><h3>Соцсети</h3><p class="dossier-hint">Из каких соцсетей приходят посетители на сайт:</p><div class="chips"><span class="chip">LinkedIn 74%</span><span class="chip">YouTube 22%</span></div></div>
+          <div><h3>Пол и возраст аудитории</h3><p class="dossier-hint">Пол и возраст реальных посетителей сайта (Similarweb, 3 мес):</p>
+          <div class="chips"><span class="chip">Мужчины 52,1%</span><span class="chip">Женщины 47,9%</span></div>
+          <div class="chips" style="margin-top:4px;"><span class="chip">18–24: 10,4%</span><span class="chip">25–34: 24,3%</span><span class="chip">35–44: 24,5%</span><span class="chip">45–54: 20,2%</span><span class="chip">55–64: 12,9%</span><span class="chip">65+: 7,7%</span></div></div>
+          <div><h3>Вывод простыми словами</h3><p>Треть трафика — с сайтов клиентов, где встроен их сервис. Много «вирусного» трафика с игрушки «угадай возраст», но это не покупатели. Лидер по отзывам на G2.</p></div>
+        </div>
+        <p class="note" style="margin-top:10px;">→ следующий слайд: скриншоты Similarweb (search, referrals, geo)</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier slide--dossier-evidence" id="s-dossier-veriff-sw" data-title="Veriff — SW">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · veriff.com · апр–июнь 2026 · Worldwide</p>
+        <h2>Veriff — данные Similarweb</h2>
+        <div class="sw-shots-stack">
+          <figure class="sw-shot sw-shot--search">
+            <figcaption>Similarweb — Поиск в Google — бесплатный · платный · по названию бренда</figcaption>
+            <img src="assets/similarweb/screenshots/veriff-search.png" alt="Поиск в Google — бесплатный · платный · по названию бренда veriff" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--referrals">
+            <figcaption>Similarweb — Переходы с сайтов клиентов — визиты · топ-сайты · сферы</figcaption>
+            <img src="assets/similarweb/screenshots/veriff-referrals.png" alt="Переходы с сайтов клиентов — визиты · топ-сайты · сферы veriff" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--geo">
+            <figcaption>Similarweb — География — из каких стран заходят</figcaption>
+            <img src="assets/similarweb/screenshots/veriff-geo.png" alt="География — из каких стран заходят veriff" loading="lazy">
+          </figure></div>
+        <div class="callout" style="margin-top:14px;font-size:12px;"><strong>Как читать:</strong> «переходы с сайтов клиентов» — это обычные люди, которые проходят проверку там, где уже встроен сервис, а не новые компании-покупатели.</div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier" id="s-dossier-sumsub" data-title="Досье Sumsub">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb dossier · sumsub.com · апр–июнь 2026</p>
+        <h2>Sumsub</h2>
+        <p class="dossier-kpi"><span><strong>5,91 млн</strong> визитов / 3 мес</span> · <span>Mobile 69% · Desktop 31%</span> · <span>Geo: US #1</span></p>
+        <p class="lead" style="font-size:11px;margin:0 0 10px;">#1 трафик · 4000+ клиентов · Direct+Email 78%</p>
+
+        <div class="dossier-cols2">
+          <div>
+            <h3>1. Каналы трафика</h3>
+            <div class="sw-chart"><img src="assets/similarweb/sumsub-channels.svg" alt="Каналы Sumsub"></div>
+          </div>
+          <div>
+            <h3>2. География — топ-5 стран</h3>
+            <p class="dossier-hint">Доля трафика = сколько посетителей из страны. «Ушли сразу» = % тех, кто закрыл сайт на первой странице.</p>
+            <table><tr><th>Страна</th><th>Доля трафика</th><th>Ушли сразу</th></tr><tr><td>United States</td><td>21,0%</td><td>33,2%</td></tr><tr><td>United Kingdom</td><td>5,2%</td><td>54,2%</td></tr><tr><td>Russia</td><td>4,1%</td><td>63,6%</td></tr><tr><td>Germany</td><td>3,3%</td><td>29,3%</td></tr><tr><td>India</td><td>3,1%</td><td>40,0%</td></tr></table>
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px;">3. Клиенты — сайты, куда встроена их проверка</h3>
+        <p class="dossier-hint">Это компании, которые уже пользуются сервисом (по данным о переходах). Доля = сколько такого трафика приходит с этого сайта.</p>
+        <table><tr><th>#</th><th>Домен</th><th>Доля</th><th>Бизнес</th></tr><tr><td>1</td><td>mp.dogpay.com</td><td>19,6%</td><td>crypto-платежи</td></tr><tr><td>2</td><td>stake.mx</td><td>8,9%</td><td>iGaming</td></tr><tr><td>3</td><td>csgogem.com</td><td>4,4%</td><td>gaming</td></tr><tr><td>4</td><td>api.digitallocker.gov.in</td><td>3,0%</td><td>гос. Индия</td></tr><tr><td>5</td><td>neobet.de</td><td>2,7%</td><td>ставки</td></tr><tr><td>6</td><td>lumiproxy.com</td><td>2,7%</td><td>infra</td></tr><tr><td>7</td><td>swapd.co</td><td>2,0%</td><td>marketplace</td></tr><tr><td>8</td><td>fragment.com</td><td>2,0%</td><td>NFT/TG</td></tr><tr><td>9</td><td>whop.com</td><td>2,0%</td><td>digital</td></tr><tr><td>10</td><td>casehug.com</td><td>1,9%</td><td>gaming</td></tr></table>
+
+        <div class="dossier-grid" style="margin-top:12px;">
+          <div><h3>Запросы в Google (бесплатные)</h3><p class="dossier-hint">По каким словам их находят в поиске без рекламы:</p><div class="chips"><span class="chip">fake id 3,9%</span><span class="chip">kyc verification 1,6%</span><span class="chip">winzir 3,5%</span></div></div>
+          <div><h3>Реклама в Google (платная)</h3><p class="dossier-hint">За какие слова платят в Google (часто — названия конкурентов):</p><div class="chips"><span class="chip">kyc 6,4%</span><span class="chip">persona 5,8%</span></div></div>
+          <div><h3>Отрасли клиентов</h3><p class="dossier-hint">На сайтах каких сфер встроена их проверка (по переходам-referral):</p><div class="chips"><span class="chip">Игры 7%</span><span class="chip">ставки 6%</span><span class="chip">госуслуги 4%</span></div></div>
+          <div><h3>Соцсети</h3><p class="dossier-hint">Из каких соцсетей приходят посетители на сайт:</p><div class="chips"><span class="chip">В основном LinkedIn (деловая сеть)</span></div></div>
+          <div><h3>Пол и возраст аудитории</h3><p class="dossier-hint">Пол и возраст реальных посетителей сайта (Similarweb, 3 мес):</p>
+          <div class="chips"><span class="chip">Мужчины 52,9%</span><span class="chip">Женщины 47,1%</span></div>
+          <div class="chips" style="margin-top:4px;"><span class="chip">18–24: 10,8%</span><span class="chip">25–34: 24,7%</span><span class="chip">35–44: 22,8%</span><span class="chip">45–54: 21,9%</span><span class="chip">55–64: 12,8%</span><span class="chip">65+: 7,1%</span></div></div>
+          <div><h3>Вывод простыми словами</h3><p>Машина бренда и контента: ~170 реклам в Meta, программа партнёров (400+ интеграторов). Сильнее всех «дожимают» клиента до покупки.</p></div>
+        </div>
+        <p class="note" style="margin-top:10px;">→ следующий слайд: скриншоты Similarweb (search, referrals, geo)</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier slide--dossier-evidence" id="s-dossier-sumsub-sw" data-title="Sumsub — SW">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · sumsub.com · апр–июнь 2026 · Worldwide</p>
+        <h2>Sumsub — данные Similarweb</h2>
+        <div class="sw-shots-stack">
+          <figure class="sw-shot sw-shot--search">
+            <figcaption>Similarweb — Поиск в Google — бесплатный · платный · по названию бренда</figcaption>
+            <img src="assets/similarweb/screenshots/sumsub-search.png" alt="Поиск в Google — бесплатный · платный · по названию бренда sumsub" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--referrals">
+            <figcaption>Similarweb — Переходы с сайтов клиентов — визиты · топ-сайты · сферы</figcaption>
+            <img src="assets/similarweb/screenshots/sumsub-referrals.png" alt="Переходы с сайтов клиентов — визиты · топ-сайты · сферы sumsub" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--geo">
+            <figcaption>Similarweb — География — из каких стран заходят</figcaption>
+            <img src="assets/similarweb/screenshots/sumsub-geo.png" alt="География — из каких стран заходят sumsub" loading="lazy">
+          </figure></div>
+        <div class="callout" style="margin-top:14px;font-size:12px;"><strong>Как читать:</strong> «переходы с сайтов клиентов» — это обычные люди, которые проходят проверку там, где уже встроен сервис, а не новые компании-покупатели.</div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier" id="s-dossier-ondato" data-title="Досье Ondato">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb dossier · ondato.com · апр–июнь 2026</p>
+        <h2>Ondato</h2>
+        <p class="dossier-kpi"><span><strong>4,0 млн</strong> визитов / 3 мес</span> · <span>Mobile 84% · Desktop 16%</span> · <span>Geo: US #1</span> · <span>22% branded</span> · <span>Search +479% YoY</span></p>
+        <p class="lead" style="font-size:11px;margin:0 0 10px;">№2 traffic · «37% social» = embed adult</p>
+
+        <div class="dossier-cols2">
+          <div>
+            <h3>1. Каналы трафика</h3>
+            <div class="sw-chart"><img src="assets/similarweb/ondato-channels.svg" alt="Каналы Ondato"></div>
+          </div>
+          <div>
+            <h3>2. География — топ-5 стран</h3>
+            <p class="dossier-hint">Доля трафика = сколько посетителей из страны. «Ушли сразу» = % тех, кто закрыл сайт на первой странице.</p>
+            <table><tr><th>Страна</th><th>Доля трафика</th><th>Ушли сразу</th></tr><tr><td>United States</td><td>44,7%</td><td>14,9%</td></tr><tr><td>United Kingdom</td><td>11,7%</td><td>30,2%</td></tr><tr><td>Germany</td><td>6,3%</td><td>30,3%</td></tr><tr><td>Australia</td><td>5,6%</td><td>20,9%</td></tr><tr><td>Brazil</td><td>2,3%</td><td>11,0%</td></tr></table>
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px;">3. Клиенты — сайты, куда встроена их проверка</h3>
+        <p class="dossier-hint">Это компании, которые уже пользуются сервисом (по данным о переходах). Доля = сколько такого трафика приходит с этого сайта.</p>
+        <table><tr><th>#</th><th>Домен</th><th>Доля</th><th>Бизнес</th></tr><tr><td>1</td><td>fansly.com</td><td>топ-1</td><td>adult-платформа</td></tr><tr><td>2</td><td>eldorado.gg</td><td>2</td><td>gaming market</td></tr><tr><td>3</td><td>fanvue.com</td><td>3</td><td>adult/creators</td></tr><tr><td>4</td><td>app.foxy.ai</td><td>4</td><td>AI/adult</td></tr><tr><td>5</td><td>loyalfans.com</td><td>5</td><td>adult</td></tr><tr><td>6</td><td>myfreecams.com</td><td>6</td><td>adult stream</td></tr><tr><td>7</td><td>bo.inside.finsei.com</td><td>7</td><td>финтех</td></tr><tr><td>8</td><td>tastyslips.com</td><td>8</td><td>adult</td></tr><tr><td>9</td><td>paraiska.bigbank.lt</td><td>9</td><td>банк LT</td></tr><tr><td>10</td><td>public69.com</td><td>10</td><td>adult</td></tr></table>
+
+        <div class="dossier-grid" style="margin-top:12px;">
+          <div><h3>Запросы в Google (бесплатные)</h3><p class="dossier-hint">По каким словам их находят в поиске без рекламы:</p><div class="chips"><span class="chip">fansly 45%</span><span class="chip">age verification 1%</span><span class="chip">best id software 1%</span></div></div>
+          <div><h3>Реклама в Google (платная)</h3><p class="dossier-hint">За какие слова платят в Google (часто — названия конкурентов):</p><div class="chips"><span class="chip">branded ~$4,3K</span></div></div>
+          <div><h3>Отрасли клиентов</h3><p class="dossier-hint">На сайтах каких сфер встроена их проверка (по переходам-referral):</p><div class="chips"><span class="chip">adult-платформы 48%</span></div></div>
+          <div><h3>Соцсети</h3><p class="dossier-hint">Из каких соцсетей приходят посетители на сайт:</p><div class="chips"><span class="chip">«Соцсети» в отчёте = встроенная проверка на adult-сайтах, а не реальный SMM</span></div></div>
+          <div><h3>Пол и возраст аудитории</h3><p class="dossier-hint">Пол и возраст реальных посетителей сайта (Similarweb, 3 мес):</p>
+          <div class="chips"><span class="chip">Мужчины 74,1%</span><span class="chip">Женщины 25,9%</span></div>
+          <div class="chips" style="margin-top:4px;"><span class="chip">18–24: 25,7%</span><span class="chip">25–34: 30,5%</span><span class="chip">35–44: 17,8%</span><span class="chip">45–54: 11,7%</span><span class="chip">55–64: 8,7%</span><span class="chip">65+: 5,6%</span></div></div>
+          <div><h3>Вывод простыми словами</h3><p>Ниша — проверка возраста для adult-платформ. 78% поиска приходит не по названию бренда, а по общим запросам.</p></div>
+        </div>
+        <p class="note" style="margin-top:10px;">→ следующий слайд: скриншоты Similarweb (search, referrals, geo)</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier slide--dossier-evidence" id="s-dossier-ondato-sw" data-title="Ondato — SW">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · ondato.com · апр–июнь 2026 · Worldwide</p>
+        <h2>Ondato — данные Similarweb</h2>
+        <div class="sw-shots-stack">
+          <figure class="sw-shot sw-shot--search">
+            <figcaption>Similarweb — Поиск в Google — бесплатный · платный · по названию бренда</figcaption>
+            <img src="assets/similarweb/screenshots/ondato-search.png" alt="Поиск в Google — бесплатный · платный · по названию бренда ondato" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--referrals">
+            <figcaption>Similarweb — Переходы с сайтов клиентов — визиты · топ-сайты · сферы</figcaption>
+            <img src="assets/similarweb/screenshots/ondato-referrals.png" alt="Переходы с сайтов клиентов — визиты · топ-сайты · сферы ondato" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--geo">
+            <figcaption>Similarweb — География — из каких стран заходят</figcaption>
+            <img src="assets/similarweb/screenshots/ondato-geo.png" alt="География — из каких стран заходят ondato" loading="lazy">
+          </figure></div>
+        <div class="callout" style="margin-top:14px;font-size:12px;"><strong>Как читать:</strong> «переходы с сайтов клиентов» — это обычные люди, которые проходят проверку там, где уже встроен сервис, а не новые компании-покупатели.</div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier" id="s-dossier-incode" data-title="Досье Incode">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb dossier · incode.com · апр–июнь 2026</p>
+        <h2>Incode</h2>
+        <p class="dossier-kpi"><span><strong>2,35 млн</strong> визитов / 3 мес</span> · <span>Mobile 86% · Desktop 14%</span> · <span>Geo: Brazil #1</span> · <span>35% branded · 65% non-branded</span> · <span>Search 52,7K (+21% YoY) · Paid +310% ключей</span></p>
+        <p class="lead" style="font-size:11px;margin:0 0 10px;">84% direct — LATAM brand</p>
+
+        <div class="dossier-cols2">
+          <div>
+            <h3>1. Каналы трафика</h3>
+            <div class="sw-chart"><img src="assets/similarweb/incode-channels.svg" alt="Каналы Incode"></div>
+          </div>
+          <div>
+            <h3>2. География — топ-5 стран</h3>
+            <p class="dossier-hint">Доля трафика = сколько посетителей из страны. «Ушли сразу» = % тех, кто закрыл сайт на первой странице.</p>
+            <table><tr><th>Страна</th><th>Доля трафика</th><th>Ушли сразу</th></tr><tr><td>Brazil</td><td>60,6%</td><td>67,3%</td></tr><tr><td>United States</td><td>14,5%</td><td>50,4%</td></tr><tr><td>Romania</td><td>3,4%</td><td>72,1%</td></tr><tr><td>Netherlands</td><td>2,4%</td><td>62,8%</td></tr><tr><td>Bosnia</td><td>2,3%</td><td>81,8%</td></tr></table>
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px;">3. Клиенты — сайты, куда встроена их проверка</h3>
+        <p class="dossier-hint">Это компании, которые уже пользуются сервисом (по данным о переходах). Доля = сколько такого трафика приходит с этого сайта.</p>
+        <table><tr><th>#</th><th>Домен</th><th>Доля</th><th>Бизнес</th></tr><tr><td>1</td><td>br.skokka.com</td><td>44,6%</td><td>adult-объявления</td></tr><tr><td>2</td><td>spankbang.com</td><td>18,9%</td><td>adult</td></tr><tr><td>3</td><td>trip.numastays.com</td><td>9,3%</td><td>travel/отели</td></tr><tr><td>4</td><td>register.arise.com</td><td>5,7%</td><td>BPO/работа</td></tr><tr><td>5</td><td>mystay.loregroup.com</td><td>0,8%</td><td>отели</td></tr><tr><td>6</td><td>xbizmiami.com</td><td>0,7%</td><td>adult-индустрия</td></tr><tr><td>7</td><td>account.ladies.de</td><td>0,3%</td><td>adult</td></tr><tr><td>8</td><td>itinerary.alliants.app</td><td>0,1%</td><td>travel</td></tr><tr><td>9</td><td>32rosu.ro</td><td>0,05%</td><td>беттинг RO</td></tr><tr><td>10</td><td>32red.com</td><td>0,03%</td><td>казино UK</td></tr></table>
+
+        <div class="dossier-grid" style="margin-top:12px;">
+          <div><h3>Запросы в Google (бесплатные)</h3><p class="dossier-hint">По каким словам их находят в поиске без рекламы:</p><div class="chips"><span class="chip">органика 64% поиска</span><span class="chip">топ-запросы идут через рекламу</span></div></div>
+          <div><h3>Реклама в Google (платная)</h3><p class="dossier-hint">За какие слова платят в Google (часто — названия конкурентов):</p><div class="chips"><span class="chip">yoti 3,8K</span><span class="chip">facecheck id 2,6K</span><span class="chip">persona 1,5K (+5000%)</span><span class="chip">veriff 1,1K — 100% реклама</span></div></div>
+          <div><h3>Отрасли клиентов</h3><p class="dossier-hint">На сайтах каких сфер встроена их проверка (по переходам-referral):</p><div class="chips"><span class="chip">adult-платформы 64,5%</span><span class="chip">финтех Латинской Америки</span></div></div>
+          <div><h3>Соцсети</h3><p class="dossier-hint">Из каких соцсетей приходят посетители на сайт:</p><div class="chips"><span class="chip">Почти нет</span></div></div>
+          <div><h3>Пол и возраст аудитории</h3><p class="dossier-hint">Пол и возраст реальных посетителей сайта (Similarweb, 3 мес):</p>
+          <div class="chips"><span class="chip">Мужчины 78,0%</span><span class="chip">Женщины 22,0%</span></div>
+          <div class="chips" style="margin-top:4px;"><span class="chip">18–24: 16,5%</span><span class="chip">25–34: 23,5%</span><span class="chip">35–44: 17,8%</span><span class="chip">45–54: 14,6%</span><span class="chip">55–64: 16,6%</span><span class="chip">65+: 10,8%</span></div></div>
+          <div><h3>Вывод простыми словами</h3><p>Больше всех тратят на рекламу в Google. Несмотря на имидж «для корпораций Латинской Америки», 65% трафика клиентов — adult-сайты.</p></div>
+        </div>
+        <p class="note" style="margin-top:10px;">→ следующий слайд: скриншоты Similarweb (referrals, geo)</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier slide--dossier-evidence" id="s-dossier-incode-sw" data-title="Incode — SW">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · incode.com · апр–июнь 2026 · Worldwide</p>
+        <h2>Incode — данные Similarweb</h2>
+        <div class="sw-shots-stack">
+          <figure class="sw-shot sw-shot--referrals">
+            <figcaption>Similarweb — Переходы с сайтов клиентов — визиты · топ-сайты · сферы</figcaption>
+            <img src="assets/similarweb/screenshots/incode-referrals.png" alt="Переходы с сайтов клиентов — визиты · топ-сайты · сферы incode" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--geo">
+            <figcaption>Similarweb — География — из каких стран заходят</figcaption>
+            <img src="assets/similarweb/screenshots/incode-geo.png" alt="География — из каких стран заходят incode" loading="lazy">
+          </figure></div>
+        <div class="callout" style="margin-top:14px;font-size:12px;"><strong>Как читать:</strong> «переходы с сайтов клиентов» — это обычные люди, которые проходят проверку там, где уже встроен сервис, а не новые компании-покупатели.</div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier" id="s-dossier-idenfy" data-title="Досье iDenfy">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb dossier · idenfy.com · апр–июнь 2026</p>
+        <h2>iDenfy</h2>
+        <p class="dossier-kpi"><span><strong>1,43 млн</strong> визитов / 3 мес</span> · <span>Mobile 70% · Desktop 30%</span> · <span>Geo: US #1</span> · <span>44% branded</span></p>
+        <p class="lead" style="font-size:11px;margin:0 0 10px;">4,9★ G2 · branded 44%</p>
+
+        <div class="dossier-cols2">
+          <div>
+            <h3>1. Каналы трафика</h3>
+            <div class="sw-chart"><img src="assets/similarweb/idenfy-channels.svg" alt="Каналы iDenfy"></div>
+          </div>
+          <div>
+            <h3>2. География — топ-5 стран</h3>
+            <p class="dossier-hint">Доля трафика = сколько посетителей из страны. «Ушли сразу» = % тех, кто закрыл сайт на первой странице.</p>
+            <table><tr><th>Страна</th><th>Доля трафика</th><th>Ушли сразу</th></tr><tr><td>United States</td><td>15,7%</td><td>16,8%</td></tr><tr><td>Portugal</td><td>6,0%</td><td>66,2%</td></tr><tr><td>Germany</td><td>4,9%</td><td>16,5%</td></tr><tr><td>India</td><td>4,6%</td><td>21,0%</td></tr><tr><td>Indonesia</td><td>4,1%</td><td>42,6%</td></tr></table>
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px;">3. Клиенты — сайты, куда встроена их проверка</h3>
+        <p class="dossier-hint">Это компании, которые уже пользуются сервисом (по данным о переходах). Доля = сколько такого трафика приходит с этого сайта.</p>
+        <table><tr><th>#</th><th>Домен</th><th>Доля</th><th>Бизнес</th></tr><tr><td>1</td><td>hetzner.com</td><td>44,6%</td><td>hosting*</td></tr><tr><td>2</td><td>gameboost.com</td><td>14,8%</td><td>gaming</td></tr><tr><td>3</td><td>topsport.lt</td><td>13,7%</td><td>букмекер LT</td></tr><tr><td>4</td><td>cellar.eros.com</td><td>6,3%</td><td>adult</td></tr><tr><td>5</td><td>app.clickup.com</td><td>4,2%</td><td>SaaS</td></tr><tr><td>6</td><td>app.dataimpulse.com</td><td>2,8%</td><td>proxy</td></tr><tr><td>7</td><td>primebiometry.com</td><td>2,4%</td><td>biometric</td></tr><tr><td>8</td><td>cryptovoucher.io</td><td>0,4%</td><td>crypto</td></tr></table>
+
+        <div class="dossier-grid" style="margin-top:12px;">
+          <div><h3>Запросы в Google (бесплатные)</h3><p class="dossier-hint">По каким словам их находят в поиске без рекламы:</p><div class="chips"><span class="chip">nfc tag 2,6%</span><span class="chip">id verification 2,5%</span><span class="chip">ein 1,6%</span></div></div>
+          <div><h3>Реклама в Google (платная)</h3><p class="dossier-hint">За какие слова платят в Google (часто — названия конкурентов):</p><div class="chips"><span class="chip">onfido 100% conquest</span><span class="chip">$3,6K PPC</span></div></div>
+          <div><h3>Отрасли клиентов</h3><p class="dossier-hint">На сайтах каких сфер встроена их проверка (по переходам-referral):</p><div class="chips"><span class="chip">Спортивные ставки</span><span class="chip">игры</span></div></div>
+          <div><h3>Соцсети</h3><p class="dossier-hint">Из каких соцсетей приходят посетители на сайт:</p><div class="chips"><span class="chip">Почти без платного продвижения</span></div></div>
+          <div><h3>Пол и возраст аудитории</h3><p class="dossier-hint">Пол и возраст реальных посетителей сайта (Similarweb, 3 мес):</p>
+          <div class="chips"><span class="chip">Мужчины 61,0%</span><span class="chip">Женщины 39,0%</span></div>
+          <div class="chips" style="margin-top:4px;"><span class="chip">18–24: 15,1%</span><span class="chip">25–34: 27,4%</span><span class="chip">35–44: 22,2%</span><span class="chip">45–54: 18,0%</span><span class="chip">55–64: 11,4%</span><span class="chip">65+: 5,9%</span></div></div>
+          <div><h3>Вывод простыми словами</h3><p>Известный бренд среди букмекеров: 71% заходят напрямую. Берут деньги только за одобренную проверку.</p></div>
+        </div>
+        <p class="note" style="margin-top:10px;">→ следующий слайд: скриншоты Similarweb (search, referrals, geo)</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier slide--dossier-evidence" id="s-dossier-idenfy-sw" data-title="iDenfy — SW">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · idenfy.com · апр–июнь 2026 · Worldwide</p>
+        <h2>iDenfy — данные Similarweb</h2>
+        <div class="sw-shots-stack">
+          <figure class="sw-shot sw-shot--search">
+            <figcaption>Similarweb — Поиск в Google — бесплатный · платный · по названию бренда</figcaption>
+            <img src="assets/similarweb/screenshots/idenfy-search.png" alt="Поиск в Google — бесплатный · платный · по названию бренда idenfy" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--referrals">
+            <figcaption>Similarweb — Переходы с сайтов клиентов — визиты · топ-сайты · сферы</figcaption>
+            <img src="assets/similarweb/screenshots/idenfy-referrals.png" alt="Переходы с сайтов клиентов — визиты · топ-сайты · сферы idenfy" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--geo">
+            <figcaption>Similarweb — География — из каких стран заходят</figcaption>
+            <img src="assets/similarweb/screenshots/idenfy-geo.png" alt="География — из каких стран заходят idenfy" loading="lazy">
+          </figure></div>
+        <div class="callout" style="margin-top:14px;font-size:12px;"><strong>Как читать:</strong> «переходы с сайтов клиентов» — это обычные люди, которые проходят проверку там, где уже встроен сервис, а не новые компании-покупатели.</div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier" id="s-dossier-complycube" data-title="Досье ComplyCube">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb dossier · complycube.com · апр–июнь 2026</p>
+        <h2>ComplyCube</h2>
+        <p class="dossier-kpi"><span><strong>240K</strong> визитов / 3 мес</span> · <span>Mobile 77% · Desktop 23%</span> · <span>Geo: UK #1</span> · <span>38% branded</span> · <span>Search 12,96K · Organic +492% YoY · Paid 1,6%</span></p>
+        <p class="lead" style="font-size:11px;margin:0 0 10px;">34% referral channel · SMB embed</p>
+
+        <div class="dossier-cols2">
+          <div>
+            <h3>1. Каналы трафика</h3>
+            <div class="sw-chart"><img src="assets/similarweb/complycube-channels.svg" alt="Каналы ComplyCube"></div>
+          </div>
+          <div>
+            <h3>2. География — топ-5 стран</h3>
+            <p class="dossier-hint">Доля трафика = сколько посетителей из страны. «Ушли сразу» = % тех, кто закрыл сайт на первой странице.</p>
+            <table><tr><th>Страна</th><th>Доля трафика</th><th>Ушли сразу</th></tr><tr><td>United Kingdom</td><td>15,7%</td><td>66,4%</td></tr><tr><td>United States</td><td>13,5%</td><td>61,0%</td></tr><tr><td>Saudi Arabia</td><td>9,3%</td><td>90,1%</td></tr><tr><td>Pakistan</td><td>5,4%</td><td>15,0%</td></tr><tr><td>Germany</td><td>5,3%</td><td>49,2%</td></tr></table>
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px;">3. Клиенты — сайты, куда встроена их проверка</h3>
+        <p class="dossier-hint">Это компании, которые уже пользуются сервисом (по данным о переходах). Доля = сколько такого трафика приходит с этого сайта.</p>
+        <table><tr><th>#</th><th>Домен</th><th>Доля</th><th>Бизнес</th></tr><tr><td>1</td><td>webapp.blincref.com</td><td>37,0%</td><td>недвижимость</td></tr></table><p class="dossier-hint" style="margin-top:6px;">У ComplyCube всего 2 сайта-источника (webapp.blincref.com, недвижимость). Публичного «встроенного» следа почти нет — маленький SMB-игрок.</p>
+
+        <div class="dossier-grid" style="margin-top:12px;">
+          <div><h3>Запросы в Google (бесплатные)</h3><p class="dossier-hint">По каким словам их находят в поиске без рекламы:</p><div class="chips"><span class="chip">kyc solutions and pricing 230</span><span class="chip">cdd 180</span><span class="chip">aml crypto 160</span><span class="chip">age verification face 150</span></div></div>
+          <div><h3>Реклама в Google (платная)</h3><p class="dossier-hint">За какие слова платят в Google (часто — названия конкурентов):</p><div class="chips"><span class="chip">почти нет (1,6% поиска</span><span class="chip">$0 PPC)</span></div></div>
+          <div><h3>Отрасли клиентов</h3><p class="dossier-hint">На сайтах каких сфер встроена их проверка (по переходам-referral):</p><div class="chips"><span class="chip">Недвижимость 37%</span><span class="chip">встраивания у мелкого финтеха</span></div></div>
+          <div><h3>Соцсети</h3><p class="dossier-hint">Из каких соцсетей приходят посетители на сайт:</p><div class="chips"><span class="chip">Незначительны</span></div></div>
+          <div><h3>Пол и возраст аудитории</h3><p class="dossier-hint">Similarweb не рассчитывает пол/возраст для этого сайта — недостаточно трафика для демографии.</p></div>
+          <div><h3>Вывод простыми словами</h3><p>Быстрее всех растут в бесплатном поиске. Вход $99/мес. По размеру — наш сегмент.</p></div>
+        </div>
+        <p class="note" style="margin-top:10px;">→ следующий слайд: скриншоты Similarweb (referrals, geo)</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier slide--dossier-evidence" id="s-dossier-complycube-sw" data-title="ComplyCube — SW">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · complycube.com · апр–июнь 2026 · Worldwide</p>
+        <h2>ComplyCube — данные Similarweb</h2>
+        <div class="sw-shots-stack">
+          <figure class="sw-shot sw-shot--referrals">
+            <figcaption>Similarweb — Переходы с сайтов клиентов — визиты · топ-сайты · сферы</figcaption>
+            <img src="assets/similarweb/screenshots/complycube-referrals.png" alt="Переходы с сайтов клиентов — визиты · топ-сайты · сферы complycube" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--geo">
+            <figcaption>Similarweb — География — из каких стран заходят</figcaption>
+            <img src="assets/similarweb/screenshots/complycube-geo.png" alt="География — из каких стран заходят complycube" loading="lazy">
+          </figure></div>
+        <div class="callout" style="margin-top:14px;font-size:12px;"><strong>Как читать:</strong> «переходы с сайтов клиентов» — это обычные люди, которые проходят проверку там, где уже встроен сервис, а не новые компании-покупатели.</div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier" id="s-dossier-jumio" data-title="Досье Jumio">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb dossier · jumio.com · апр–июнь 2026</p>
+        <h2>Jumio</h2>
+        <p class="dossier-kpi"><span><strong>673K</strong> визитов / 3 мес</span> · <span>Mobile 85% · Desktop 15%</span> · <span>Geo: US #1</span> · <span>70% branded</span> · <span>Search 91,9K (41% трафика) · Organic −55% ключей / Paid +129%</span></p>
+        <p class="lead" style="font-size:11px;margin:0 0 10px;">Enterprise SEO legacy · органика падает, реклама растёт</p>
+
+        <div class="dossier-cols2">
+          <div>
+            <h3>1. Каналы трафика</h3>
+            <div class="sw-chart"><img src="assets/similarweb/jumio-channels.svg" alt="Каналы Jumio"></div>
+          </div>
+          <div>
+            <h3>2. География — топ-5 стран</h3>
+            <p class="dossier-hint">Доля трафика = сколько посетителей из страны. «Ушли сразу» = % тех, кто закрыл сайт на первой странице.</p>
+            <table><tr><th>Страна</th><th>Доля трафика</th><th>Ушли сразу</th></tr><tr><td>Thailand</td><td>16,6%</td><td>58,8%</td></tr><tr><td>Vietnam</td><td>14,7%</td><td>6,9%</td></tr><tr><td>United States</td><td>12,2%</td><td>63,6%</td></tr><tr><td>India</td><td>6,5%</td><td>19,9%</td></tr><tr><td>Brazil</td><td>5,6%</td><td>77,7%</td></tr></table>
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px;">3. Клиенты — сайты, куда встроена их проверка</h3>
+        <p class="dossier-hint">Это компании, которые уже пользуются сервисом (по данным о переходах). Доля = сколько такого трафика приходит с этого сайта.</p>
+        <table><tr><th>#</th><th>Домен</th><th>Доля</th><th>Бизнес</th></tr><tr><td>1</td><td>github.com</td><td>8,6%</td><td>dev-платформа</td></tr><tr><td>2</td><td>en.wikipedia.org</td><td>6,7%</td><td>справочник</td></tr><tr><td>3</td><td>instahyre.com</td><td>5,9%</td><td>работа (IN)</td></tr><tr><td>4</td><td>app.asana.com</td><td>4,4%</td><td>SaaS-таски</td></tr><tr><td>5</td><td>force.com</td><td>2,2%</td><td>Salesforce</td></tr><tr><td>6</td><td>tickets.parisblockchainweek.com</td><td>0,5%</td><td>событие</td></tr><tr><td>7</td><td>login.outreach.io</td><td>0,05%</td><td>sales SaaS</td></tr></table><p class="dossier-hint" style="margin-top:6px;">У Jumio 71% referral-трафика — из скрытых источников, а видимые ссылки (github, wikipedia, asana) — это упоминания/корпоративные инструменты, а не сайты со встроенной проверкой. Значит Jumio продаёт крупным клиентам напрямую, а не через embed.</p>
+
+        <div class="dossier-grid" style="margin-top:12px;">
+          <div><h3>Запросы в Google (бесплатные)</h3><p class="dossier-hint">По каким словам их находят в поиске без рекламы:</p><div class="chips"><span class="chip">aretheyregistered.ca 1K</span><span class="chip">authenticator app 810</span></div></div>
+          <div><h3>Реклама в Google (платная)</h3><p class="dossier-hint">За какие слова платят в Google (часто — названия конкурентов):</p><div class="chips"><span class="chip">kyc 590</span><span class="chip">persona 470 (New)</span><span class="chip">veriff 360 (+227%)</span></div></div>
+          <div><h3>Отрасли клиентов</h3><p class="dossier-hint">На сайтах каких сфер встроена их проверка (по переходам-referral):</p><div class="chips"><span class="chip">Сайты для разработчиков 11%</span><span class="chip">корпоративные финансы</span></div></div>
+          <div><h3>Соцсети</h3><p class="dossier-hint">Из каких соцсетей приходят посетители на сайт:</p><div class="chips"><span class="chip">LinkedIn (в основном анонсы мероприятий)</span></div></div>
+          <div><h3>Пол и возраст аудитории</h3><p class="dossier-hint">Пол и возраст реальных посетителей сайта (Similarweb, 3 мес):</p>
+          <div class="chips"><span class="chip">Мужчины 49,7%</span><span class="chip">Женщины 50,3%</span></div>
+          <div class="chips" style="margin-top:4px;"><span class="chip">18–24: 10,1%</span><span class="chip">25–34: 22,4%</span><span class="chip">35–44: 25,8%</span><span class="chip">45–54: 22,4%</span><span class="chip">55–64: 13,0%</span><span class="chip">65+: 6,4%</span></div></div>
+          <div><h3>Вывод простыми словами</h3><p>Делают ставку на статьи и поиск. Клиентского трафика меньше (11%), чем у Veriff (33%) — продают крупным корпорациям долгим циклом.</p></div>
+        </div>
+        <p class="note" style="margin-top:10px;">→ следующий слайд: скриншоты Similarweb (referrals, geo)</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier slide--dossier-evidence" id="s-dossier-jumio-sw" data-title="Jumio — SW">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · jumio.com · апр–июнь 2026 · Worldwide</p>
+        <h2>Jumio — данные Similarweb</h2>
+        <div class="sw-shots-stack">
+          <figure class="sw-shot sw-shot--referrals">
+            <figcaption>Similarweb — Переходы с сайтов клиентов — визиты · топ-сайты · сферы</figcaption>
+            <img src="assets/similarweb/screenshots/jumio-referrals.png" alt="Переходы с сайтов клиентов — визиты · топ-сайты · сферы jumio" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--geo">
+            <figcaption>Similarweb — География — из каких стран заходят</figcaption>
+            <img src="assets/similarweb/screenshots/jumio-geo.png" alt="География — из каких стран заходят jumio" loading="lazy">
+          </figure></div>
+        <div class="callout" style="margin-top:14px;font-size:12px;"><strong>Как читать:</strong> «переходы с сайтов клиентов» — это обычные люди, которые проходят проверку там, где уже встроен сервис, а не новые компании-покупатели.</div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier" id="s-dossier-regula" data-title="Досье Regula">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb dossier · regulaforensics.com · апр–июнь 2026</p>
+        <h2>Regula</h2>
+        <p class="dossier-kpi"><span><strong>532K</strong> визитов / 3 мес</span> · <span>Mobile 48% · Desktop 52%</span> · <span>Geo: Ukraine #1</span> · <span>7% branded · 93% non-branded</span> · <span>Search +13% YoY · PPC $2,2K</span></p>
+        <p class="lead" style="font-size:11px;margin:0 0 10px;">Forensic niche · desktop 52%</p>
+
+        <div class="dossier-cols2">
+          <div>
+            <h3>1. Каналы трафика</h3>
+            <div class="sw-chart"><img src="assets/similarweb/regula-channels.svg" alt="Каналы Regula"></div>
+          </div>
+          <div>
+            <h3>2. География — топ-5 стран</h3>
+            <p class="dossier-hint">Доля трафика = сколько посетителей из страны. «Ушли сразу» = % тех, кто закрыл сайт на первой странице.</p>
+            <table><tr><th>Страна</th><th>Доля трафика</th><th>Ушли сразу</th></tr><tr><td>United States</td><td>11,1%</td><td>70,8%</td></tr><tr><td>Ukraine</td><td>6,9%</td><td>63,4%</td></tr><tr><td>Belarus</td><td>4,4%</td><td>26,0%</td></tr><tr><td>Canada</td><td>3,6%</td><td>72,0%</td></tr><tr><td>India</td><td>2,8%</td><td>50,2%</td></tr></table>
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px;">3. Клиенты — сайты, куда встроена их проверка</h3>
+        <p class="dossier-hint">Это компании, которые уже пользуются сервисом (по данным о переходах). Доля = сколько такого трафика приходит с этого сайта.</p>
+        <table><tr><th>#</th><th>Домен</th><th>Доля</th><th>Бизнес</th></tr><tr><td>1</td><td>pub.dev</td><td>2,8%</td><td>dev-пакеты</td></tr><tr><td>2</td><td>app.clickup.com</td><td>2,1%</td><td>SaaS</td></tr><tr><td>3</td><td>url-opener.com</td><td>1,6%</td><td>утилита</td></tr><tr><td>4</td><td>initsogmbh.atlassian.net</td><td>0,1%</td><td>dev/интегратор</td></tr><tr><td>5</td><td>hub.docker.com</td><td>0,1%</td><td>dev-образы</td></tr><tr><td>6</td><td>finextra.com</td><td>0,02%</td><td>финтех-СМИ</td></tr></table><p class="dossier-hint" style="margin-top:6px;">У Regula referral почти нет (11,6K визитов, 93% скрыто). Видимые ссылки — dev-инструменты (pub.dev, docker) и финтех-СМИ. Модель — прямые продажи в enterprise и госсектор, без встроенного потребительского потока.</p>
+
+        <div class="dossier-grid" style="margin-top:12px;">
+          <div><h3>Запросы в Google (бесплатные)</h3><p class="dossier-hint">По каким словам их находят в поиске без рекламы:</p><div class="chips"><span class="chip">confidential document processing</span><span class="chip">ekyc</span><span class="chip">roblox age verify</span></div></div>
+          <div><h3>Реклама в Google (платная)</h3><p class="dossier-hint">За какие слова платят в Google (часто — названия конкурентов):</p><div class="chips"><span class="chip">minimal $2,2K</span></div></div>
+          <div><h3>Отрасли клиентов</h3><p class="dossier-hint">На сайтах каких сфер встроена их проверка (по переходам-referral):</p><div class="chips"><span class="chip">Сайты для разработчиков</span><span class="chip">экспертиза документов</span></div></div>
+          <div><h3>Соцсети</h3><p class="dossier-hint">Из каких соцсетей приходят посетители на сайт:</p><div class="chips"><span class="chip">LinkedIn (деловая сеть)</span></div></div>
+          <div><h3>Пол и возраст аудитории</h3><p class="dossier-hint">Пол и возраст реальных посетителей сайта (Similarweb, 3 мес):</p>
+          <div class="chips"><span class="chip">Мужчины 54,9%</span><span class="chip">Женщины 45,1%</span></div>
+          <div class="chips" style="margin-top:4px;"><span class="chip">18–24: 34,7%</span><span class="chip">25–34: 20,9%</span><span class="chip">35–44: 13,6%</span><span class="chip">45–54: 12,4%</span><span class="chip">55–64: 10,7%</span><span class="chip">65+: 7,7%</span></div></div>
+          <div><h3>Вывод простыми словами</h3><p>35% трафика — из бесплатного поиска по темам документов и разработки. Смежный игрок (экспертиза документов).</p></div>
+        </div>
+        <p class="note" style="margin-top:10px;">→ следующий слайд: скриншоты Similarweb (search, referrals, geo)</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier slide--dossier-evidence" id="s-dossier-regula-sw" data-title="Regula — SW">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · regulaforensics.com · апр–июнь 2026 · Worldwide</p>
+        <h2>Regula — данные Similarweb</h2>
+        <div class="sw-shots-stack">
+          <figure class="sw-shot sw-shot--search">
+            <figcaption>Similarweb — Поиск в Google — бесплатный · платный · по названию бренда</figcaption>
+            <img src="assets/similarweb/screenshots/regula-search.png" alt="Поиск в Google — бесплатный · платный · по названию бренда regula" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--referrals">
+            <figcaption>Similarweb — Переходы с сайтов клиентов — визиты · топ-сайты · сферы</figcaption>
+            <img src="assets/similarweb/screenshots/regula-referrals.png" alt="Переходы с сайтов клиентов — визиты · топ-сайты · сферы regula" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--geo">
+            <figcaption>Similarweb — География — из каких стран заходят</figcaption>
+            <img src="assets/similarweb/screenshots/regula-geo.png" alt="География — из каких стран заходят regula" loading="lazy">
+          </figure></div>
+        <div class="callout" style="margin-top:14px;font-size:12px;"><strong>Как читать:</strong> «переходы с сайтов клиентов» — это обычные люди, которые проходят проверку там, где уже встроен сервис, а не новые компании-покупатели.</div>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier" id="s-dossier-persona" data-title="Досье Persona">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb dossier · withpersona.com · апр–июнь 2026</p>
+        <h2>Persona</h2>
+        <p class="dossier-kpi"><span><strong>46,3 млн*</strong> визитов / 3 мес</span> · <span>Mobile 87% · Desktop 13%</span> · <span>Geo: US #1</span> · <span>75% branded · 25% non-branded</span> · <span>Search +95% YoY · PPC $864K/qtr</span></p>
+        <p class="lead" style="font-size:11px;margin:0 0 10px;">*Widget inflation — не сравнивать 1:1 по visits</p>
+
+        <div class="dossier-cols2">
+          <div>
+            <h3>1. Каналы трафика</h3>
+            <div class="sw-chart"><img src="assets/similarweb/persona-channels.svg" alt="Каналы Persona"></div>
+          </div>
+          <div>
+            <h3>2. География — топ-5 стран</h3>
+            <p class="dossier-hint">Доля трафика = сколько посетителей из страны. «Ушли сразу» = % тех, кто закрыл сайт на первой странице.</p>
+            <table><tr><th>Страна</th><th>Доля трафика</th><th>Ушли сразу</th></tr><tr><td>United States</td><td>23,0%</td><td>52,8%</td></tr><tr><td>Indonesia</td><td>11,3%</td><td>31,8%</td></tr><tr><td>United Kingdom</td><td>5,3%</td><td>72,0%</td></tr><tr><td>Philippines</td><td>5,0%</td><td>65,3%</td></tr><tr><td>Brazil</td><td>4,8%</td><td>69,4%</td></tr></table>
+          </div>
+        </div>
+
+        <h3 style="margin-top:12px;">3. Клиенты — сайты, куда встроена их проверка</h3>
+        <p class="dossier-hint">Это компании, которые уже пользуются сервисом (по данным о переходах). Доля = сколько такого трафика приходит с этого сайта.</p>
+        <table><tr><th>#</th><th>Домен</th><th>Доля</th><th>Бизнес</th></tr><tr><td>1</td><td>kaggle.com</td><td>топ-1</td><td>data science (Google)</td></tr><tr><td>2</td><td>roblox.com</td><td>2</td><td>игры</td></tr><tr><td>3</td><td>digilocker.signzy.tech</td><td>3</td><td>KYC Индия</td></tr><tr><td>4</td><td>contra.com</td><td>4</td><td>фриланс</td></tr><tr><td>5</td><td>dashboard.retellai.com</td><td>5</td><td>AI</td></tr><tr><td>6</td><td>dashboard.twitch.tv</td><td>6</td><td>стриминг (Amazon)</td></tr><tr><td>7</td><td>indiecampers.com</td><td>7</td><td>travel</td></tr><tr><td>8</td><td>platform.openai.com</td><td>8</td><td>OpenAI</td></tr><tr><td>9</td><td>ashleymadison.com</td><td>9</td><td>dating/adult</td></tr><tr><td>10</td><td>playboy.com</td><td>10</td><td>adult</td></tr></table><p class="dossier-hint" style="margin-top:6px;">У Persona 225 сайтов-клиентов — самый широкий охват. Среди них big-tech и AI: OpenAI, Roblox, Twitch, Kaggle. Сильнейший embed-роутер на рынке.</p>
+
+        <div class="dossier-grid" style="margin-top:12px;">
+          <div><h3>Запросы в Google (бесплатные)</h3><p class="dossier-hint">По каким словам их находят в поиске без рекламы:</p><div class="chips"><span class="chip">onfido</span><span class="chip">kyc</span><span class="chip">kyc verification</span><span class="chip">kyc compliance meaning</span></div></div>
+          <div><h3>Реклама в Google (платная)</h3><p class="dossier-hint">За какие слова платят в Google (часто — названия конкурентов):</p><div class="chips"><span class="chip">PPC $864K/qtr</span><span class="chip">onfido conquest</span></div></div>
+          <div><h3>Отрасли клиентов</h3><p class="dossier-hint">На сайтах каких сфер встроена их проверка (по переходам-referral):</p><div class="chips"><span class="chip">Разработка ПО 35%</span><span class="chip">видеоигры 17%</span><span class="chip">банки 6%</span><span class="chip">инвестиции 6%</span></div></div>
+          <div><h3>Соцсети</h3><p class="dossier-hint">Из каких соцсетей приходят посетители на сайт:</p><div class="chips"><span class="chip">Основной трафик — встроенный код на сайтах клиентов, не классические соцсети; из соцсетей — LinkedIn</span></div></div>
+          <div><h3>Пол и возраст аудитории</h3><p class="dossier-hint">Пол и возраст реальных посетителей сайта (Similarweb, 3 мес):</p>
+          <div class="chips"><span class="chip">Мужчины 54,1%</span><span class="chip">Женщины 45,9%</span></div>
+          <div class="chips" style="margin-top:4px;"><span class="chip">18–24: 30,1%</span><span class="chip">25–34: 27,8%</span><span class="chip">35–44: 18,9%</span><span class="chip">45–54: 11,6%</span><span class="chip">55–64: 7,3%</span><span class="chip">65+: 4,4%</span></div></div>
+          <div><h3>Вывод простыми словами</h3><p>Сильно вырос бренд: 75% ищут по названию (в 2023 было 17%). Много платной рекламы + огромный встроенный трафик с сайтов клиентов.</p></div>
+        </div>
+        <p class="note" style="margin-top:10px;">→ следующий слайд: скриншоты Similarweb (search, referrals, geo)</p>
+      </div>
+    </section>
+    <section class="slide slide--muted slide--compact slide--dense slide--dossier slide--dossier-evidence" id="s-dossier-persona-sw" data-title="Persona — SW">
+      <div class="slide__inner slide__inner--scroll">
+        <p class="eyebrow">Similarweb · withpersona.com · апр–июнь 2026 · Worldwide</p>
+        <h2>Persona — данные Similarweb</h2>
+        <div class="sw-shots-stack">
+          <figure class="sw-shot sw-shot--search">
+            <figcaption>Similarweb — Поиск в Google — бесплатный · платный · по названию бренда</figcaption>
+            <img src="assets/similarweb/screenshots/persona-search.png" alt="Поиск в Google — бесплатный · платный · по названию бренда persona" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--referrals">
+            <figcaption>Similarweb — Переходы с сайтов клиентов — визиты · топ-сайты · сферы</figcaption>
+            <img src="assets/similarweb/screenshots/persona-referrals.png" alt="Переходы с сайтов клиентов — визиты · топ-сайты · сферы persona" loading="lazy">
+          </figure>
+          <figure class="sw-shot sw-shot--geo">
+            <figcaption>Similarweb — География — из каких стран заходят</figcaption>
+            <img src="assets/similarweb/screenshots/persona-geo.png" alt="География — из каких стран заходят persona" loading="lazy">
+          </figure></div>
+        <div class="callout" style="margin-top:14px;font-size:12px;"><strong>Как читать:</strong> «переходы с сайтов клиентов» — это обычные люди, которые проходят проверку там, где уже встроен сервис, а не новые компании-покупатели.</div>
+      </div>
+    </section>
+
+  </div>
+
+<div class="progress" aria-hidden="true"><div class="progress__bar" id="progressBar"></div></div>
+<p class="nav-hint">← → · прокрутка · <span id="slideCounter2">1 / 11</span></p>
+
+<script>
+(function () {
+  const deck = document.getElementById('deck');
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const bar = document.getElementById('progressBar');
+  const counter = document.getElementById('slideCounter');
+  const counter2 = document.getElementById('slideCounter2');
+  const nav = document.getElementById('sidebarNav');
+
+  slides.forEach((s, i) => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = '#' + (s.id || 's-' + i);
+    a.textContent = s.dataset.title || ('Slide ' + (i + 1));
+    a.addEventListener('click', (e) => { e.preventDefault(); s.scrollIntoView({ behavior: 'smooth' }); });
+    li.appendChild(a);
+    nav.appendChild(li);
+  });
+
+  function currentIndex() {
+    const y = deck.scrollTop;
+    let idx = 0;
+    slides.forEach((s, i) => { if (s.offsetTop <= y + deck.clientHeight * 0.4) idx = i; });
+    return idx;
+  }
+
+  function updateUI() {
+    const i = currentIndex();
+    bar.style.width = ((i + 1) / slides.length * 100) + '%';
+    const txt = (i + 1) + ' / ' + slides.length;
+    counter.textContent = txt;
+    counter2.textContent = txt;
+    nav.querySelectorAll('a').forEach((a, j) => a.classList.toggle('active', j === i));
+  }
+
+  deck.addEventListener('scroll', updateUI, { passive: true });
+  updateUI();
+
+  function goTo(index) {
+    const i = Math.max(0, Math.min(slides.length - 1, index));
+    slides[i].scrollIntoView({ behavior: 'smooth' });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    const i = currentIndex();
+    if (['ArrowDown','ArrowRight','PageDown',' '].includes(e.key)) { e.preventDefault(); goTo(i + 1); }
+    if (['ArrowUp','ArrowLeft','PageUp'].includes(e.key)) { e.preventDefault(); goTo(i - 1); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End') { e.preventDefault(); goTo(slides.length - 1); }
+  });
+
+  const TRAFFIC = [
+    { name: 'Persona', visits: 46260000, persona: true },
+    { name: 'Sumsub', visits: 5914000 },
+    { name: 'Ondato', visits: 4007000 },
+    { name: 'Incode', visits: 2352000 },
+    { name: 'Didit', visits: 2332000 },
+    { name: 'Veriff', visits: 1995000 },
+    { name: 'iDenfy', visits: 1433000 },
+    { name: 'Shufti Pro', visits: 728899 },
+    { name: 'Jumio', visits: 672557 },
+    { name: 'Regula', visits: 532187 },
+    { name: 'ComplyCube', visits: 240004 },
+    { name: 'Biometric', visits: 19270, us: true },
+  ];
+
+  const CHANNELS = [
+    { name: 'Sumsub', direct: 72, ref: 10, org: 10, paid: 1, social: 5, email: 6 },
+    { name: 'Veriff', direct: 42, ref: 33, org: 13, paid: 2, social: 5, email: 3 },
+    { name: 'Didit', direct: 60, ref: 22, org: 10, paid: 3, social: 2, email: 1 },
+    { name: 'iDenfy', direct: 71, ref: 18, org: 6, paid: 0.4, social: 1, email: 2 },
+    { name: 'Ondato', direct: 50, ref: 12, org: 6, paid: 0.3, social: 37, email: 1 },
+    { name: 'Incode', direct: 84, ref: 9, org: 5, paid: 3, social: 1, email: 0.3 },
+    { name: 'Shufti', direct: 76, ref: 14, org: 10, paid: 2, social: 1, email: 1 },
+    { name: 'ComplyCube', direct: 44, ref: 34, org: 21, paid: 0.3, social: 3, email: 1 },
+    { name: 'Jumio', direct: 43, ref: 11, org: 33, paid: 10, social: 2, email: 1 },
+    { name: 'Regula', direct: 55, ref: 2, org: 35, paid: 3, social: 2, email: 1 },
+    { name: 'Biometric', direct: 60, ref: 40, org: 0, paid: 0, social: 0, email: 0, us: true },
+  ];
+
+  function fmtVisits(n) {
+    if (n >= 1e6) return (n / 1e6).toFixed(1).replace('.0', '') + ' млн';
+    if (n >= 1e3) return Math.round(n / 1e3) + ' тыс.';
+    return String(n);
+  }
+
+  function renderTrafficBars() {
+    const el = document.getElementById('trafficBars');
+    if (!el) return;
+    const compare = TRAFFIC.filter((r) => !r.persona);
+    const maxLog = Math.log10(Math.max(...compare.map((r) => r.visits)));
+    const minLog = Math.log10(19270);
+    el.innerHTML = TRAFFIC.map((row) => {
+      const pct = row.persona
+        ? 100
+        : Math.max(6, ((Math.log10(row.visits) - minLog) / (maxLog - minLog)) * 100);
+      const cls = ['bar-row', row.us ? 'bar-row--us' : '', row.persona ? 'bar-row--persona' : ''].filter(Boolean).join(' ');
+      return `<div class="${cls}"><span class="bar-row__name">${row.name}</span><div class="bar-row__track"><div class="bar-row__fill" style="width:${pct.toFixed(1)}%"></div></div><span class="bar-row__val">${fmtVisits(row.visits)}</span></div>`;
+    }).join('');
+  }
+
+  function renderChannelBars() {
+    const el = document.getElementById('channelBars');
+    if (!el) return;
+    const segLabels = { direct: 'прямые', ref: 'клиенты', org: 'Google', paid: 'реклама', social: 'соцсети', email: 'email' };
+    el.innerHTML = CHANNELS.map((row) => {
+      const segs = [
+        ['direct', row.direct], ['ref', row.ref], ['org', row.org],
+        ['paid', row.paid], ['social', row.social], ['email', row.email],
+      ].filter(([, v]) => v > 0);
+      const bar = segs.map(([k, v]) => `<div class="stack-seg stack-seg--${k}" style="width:${v}%" title="${segLabels[k]} ${v}%"></div>`).join('');
+      const hint = segs.map(([k, v]) => `${segLabels[k]} ${v % 1 ? v.toFixed(1) : v}%`).join(' · ');
+      return `<div class="stack-row${row.us ? ' stack-row--us' : ''}"><span class="stack-row__name">${row.name}</span><div class="stack-row__body"><div class="stack-bar">${bar}</div><span class="stack-row__hint">${hint}</span></div></div>`;
+    }).join('');
+  }
+
+  renderTrafficBars();
+  renderChannelBars();
+})();
+</script>
+</body>
+</html>
